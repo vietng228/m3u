@@ -1,5 +1,8 @@
 #EXTM3U url-tvg="https://lichphatsong.site/schedule/epg.xml"
 #EXTM3U x-tvg-url="https://vnepg.site/epg.xml" tvg-shift=0 cache=500 deinterlace=1 aspect-ratio=16:9 m3uautoload=1"
+#EXTM3U url-tvg="https://vnepg.site/epg.xml"
+#EXTM3U url-tvg="https://xem.dramahay.xyz/epg.xml"
+#EXTM3U url-tvg="https://tvbvn.quanlehong539.workers.dev/xml"
 
 #EXTINF:-1 tvg-id="vtv1-hd" group-title="Kênh VTV" group-logo="https://toiyeuvietnam.dpdns.org/HoiQuanLogo/Images/HinhNhom.png" tvg-logo="https://toiyeuvietnam.dpdns.org/Logo/vtv1-hd/KenhCoBan",VTV1 HD
 https://toiyeuvietnam.dpdns.org/CoBan/vtv1-hd/TuyetDoiKhongKinhDoanh.m3u8
@@ -482,6 +485,7 @@ https://toiyeuvietnam.dpdns.org/NguonOnliveTV/fashionhd/ToChaThangVThanh
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36
 #EXTVLCOPT: http-referrer=https://hoiquan.click/
 https://toiyeuvietnam.dpdns.org/NguonOnliveTV/tlchd/ToChaThangVThanh
+
 
 
 
