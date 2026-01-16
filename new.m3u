@@ -1,16 +1,5 @@
 #EXTM3U url-tvg="https://lichphatsong.site/schedule/epg.xml"
 #EXTM3U x-tvg-url="https://vnepg.site/epg.xml" tvg-shift=0 cache=500 deinterlace=1 aspect-ratio=16:9 m3uautoload=1"
-
-
-#Thông Báo: Nhóm thường xuyên bị Phá Hoại, rất Xin Lỗi mọi người. vui lòng vào nhóm lại với Link mới.
-
-
-#Đây là kênh tổng hợp của các kênh TV iptv trên mạng xã hội, Admin không phải tác giả của những kênh này, do đó không chịu trách nhiệm về bất cứ điều gì dưới mọi hình thức
-
-#Tuyệt đối 100% không thu phí hay có bất kì hình thức thu tiền của bất kỳ người dùng nào
-
-#Link nhóm Zalo Hội Quán CLICK: https://zalo.me/g/iytapv300
-
 #EXTINF:-1 tvg-id="vtv1-hd" group-title="Kênh VTV" group-logo="https://toiyeuvietnam.dpdns.org/HoiQuanLogo/Images/HinhNhom.png" tvg-logo="https://toiyeuvietnam.dpdns.org/Logo/vtv1-hd/KenhCoBan.png",VTV1 HD
 https://toiyeuvietnam.dpdns.org/TuyetDoiKhongKinhDoanh/vtv1-hd/KenhCoBan.m3u8
 #EXTINF:-1 tvg-id="vtv2-hd" group-title="Kênh VTV" group-logo="https://toiyeuvietnam.dpdns.org/HoiQuanLogo/Images/HinhNhom.png" tvg-logo="https://toiyeuvietnam.dpdns.org/Logo/vtv2-hd/KenhCoBan.png",VTV2 HD
@@ -291,7 +280,6 @@ https://toiyeuvietnam.dpdns.org/TuyetDoiKhongKinhDoanh/phim-viet/KenhCoBan.m3u8
 https://toiyeuvietnam.dpdns.org/TuyetDoiKhongKinhDoanh/phim-au-my/KenhCoBan.m3u8
 #EXTINF:-1 tvg-id="hoat-hinh" group-title="Sự kiện trực tiếp" group-logo="https://toiyeuvietnam.dpdns.org/HoiQuanLogo/Images/HinhNhom.png" tvg-logo="https://toiyeuvietnam.dpdns.org/Logo/hoat-hinh/KenhCoBan.png",Hoạt hình
 https://toiyeuvietnam.dpdns.org/TuyetDoiKhongKinhDoanh/hoat-hinh/KenhCoBan.m3u8
-
 #EXTINF:-1 tvg-id="vietnamtoday" group-logo="https://toiyeuvietnam.dpdns.org/HoiQuanLogo/Images/HinhNhom.png" group-title="Kênh VTV" tvg-logo="https://toiyeuvietnam.dpdns.org/Logo/vietnamtoday/KenhBoSung.png",Vietnam Today
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36
 #EXTVLCOPT: http-referrer=https://hoiquan.click/
@@ -744,3 +732,4 @@ https://toiyeuvietnam.dpdns.org/OnliveTV/skymix/Free.m3u8
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36
 #EXTVLCOPT: http-referrer=https://hoiquan.click/
 https://toiyeuvietnam.dpdns.org/OnliveTV/skytennis/Free.m3u8
+
