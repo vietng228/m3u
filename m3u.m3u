@@ -24,37 +24,12 @@ https://live.fptplay53.net/fnxhd1/vtv8hd_vhls.smil/chunklist_b5000000.m3u8
 https://live.fptplay53.net/live/media/v9abr/live247-hls-avc/v9abr-avc1_5600000=10000-mp4a_131600=20000.m3u8
 #EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.imgur.com/HCpqatZ.png",VTV10
 https://live.fptplay53.net/live/media/v10abr/live247-hls-avc/v10abr-avc1_5600000=10000-mp4a_131600=20000.m3u8
-
-#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/dfGZxST/cchtv1.webp" tvg-id="22b8cd8d92ab071051b41b2c09a65736",HTV1
-https://live.fptplay53.net/epzhd1/htv1_hls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.imgur.com/Yc3cmAi.png",HTV2
-https://live.fptplay53.net/epzhd1/htv2hd_vhls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/8rWVRBf/cchtv3.webp" tvg-id="f73a137acaaf6d8b228e644912b812bb",HTV3
-https://live.fptplay53.net/epzhd1/htv3_hls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/cw0Jym1/cchtvkey.webp" tvg-id="6dcfc8a79c8341d5a4c5bf672928fba4",HTV4
-https://live.fptplay53.net/epzhd1/htv4_hls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="Truyền Hình"tvg-logo="https://i.imgur.com/jeunb3Y.png",HTV5
-https://live.fptplay53.net/fnxsd1/btv9_hls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/bX1LD0H/cchtv7.webp" tvg-id="1b155d629006898bfada5abdad9adb45",HTV7
-https://live.fptplay53.net/epzhd1/htv7hd_vhls.smil/chunklist_b5000000.m3u8
-#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/j6BCF0M/cchtv9.webp" tvg-id="a5912ec47c1aef3975515bede476bbcf",HTV9
-https://live-a.fptplay53.net/live/media/htv9/live247-hls-avc/htv9-avc1_5600000=10000-mp4a_131600=20000.m3u8
-#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/R6myMTc/cchtvthethao.webp" tvg-id="cecd99d151bcb92a3866024f08c07b9f",HTV Thể Thao
-https://live.fptplay53.net/epzhd1/htvcthethao_vhls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/Z1Dhx8X/cchtvccanhac.webp" tvg-id="4009e0a06b8eba5abf6be992510a7eac",HTVC Ca Nhạc
-https://live.fptplay53.net/epzhd1/htvcmusic_vhls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/25yJ9rv/cchtvcdulich.webp" tvg-id="ef5e2ae9aacf989d46128376630a73d0",HTVC Du Lịch và Cuộc Sống
-https://live.fptplay53.net/epzhd1/htvcdulich_vhls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/xgtfrnk/cchtvcgiadinh.webp" tvg-id="aef2a410c83827f38f23b43163e41c0d",HTVC Gia Đình
-https://live.fptplay53.net/epzhd1/htvcgiadinh_vhls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/YB72fKd/cchtvcphim.webp" tvg-id="61894f47d320186ea79a37150dcf370d",HTVC Phim
-https://live.fptplay53.net/epzhd1/htvcmovieshd_vhls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/d6ZbQc7/cchtvcphunu.webp" tvg-id="bfba9bb09043b9a567c4f8ef59bca7dc",HTVC Phụ Nữ
-https://live.fptplay53.net/epzhd1/htvcphunu_vhls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/Z6Hf06M/cchtvcthuanviet.webp" tvg-id="58b9fe39a6a2666a07b921bdd83a2ba4",HTVC Thuần Việt
-https://live.fptplay53.net/epzhd1/htvcthuanviethd_vhls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/vhLGXcK/cchtvcplus.webp" tvg-id="fd51b6c6836ec943e7ad21f0036f879e",HTVC Plus
-https://live.fptplay53.net/epzhd1/htvcplus_vhls.smil/chunklist.m3u8
+#EXTINF:-1 group-title="Truyền Hình"tvg-logo="https://i.imgur.com/QztqOe0.png",An Ninh TV
+https://live.fptplay53.net/fnxhd2/anninhtv_vhls.smil/chunklist.m3u8
+#EXTINF:-1 group-title="Truyền Hình"tvg-logo="https://i.imgur.com/UIGZw0y.png",Quốc Phòng VN
+https://live.fptplay53.net/live/media/quocphongvn/live-hls-avc/quocphongvn-avc1_4000000=10000-mp4a_131600=20000.m3u8
+#EXTINF:-1 tvg-id="vietnamtoday" group-title="Truyền Hình" tvg-logo="https://vnepg.site/logos/176.png",VietNam Today
+https://live.fptplay53.net/fnxhd1/vntoday_vhls.smil/chunklist.m3u8
 
 #EXTINF:-1 group-title="Truyền Hình"tvg-logo="https://i.imgur.com/pTVybK6.png",Vĩnh Long 1
 https://live.fptplay53.net/live/media/vinhlong1/live247-hls-avc/index.m3u8
@@ -152,9 +127,34 @@ https://live.mediatech.vn/live/28595222e707a364251b8724717894baa46/playlist.m3u8
 https://live.fptplay53.net/fnxsd1/thanhhoa_hls.smil/chunklist.m3u8
 #EXTINF:-1 group-title="Truyền Hình"tvg-logo="https://i.imgur.com/qPZeGPa.png",Tuyên Quang
 https://live.fptplay53.net/fnxsd1/tuyenquang_hls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="Truyền Hình"tvg-logo="https://i.imgur.com/QztqOe0.png",An Ninh TV
-https://live.fptplay53.net/fnxhd2/anninhtv_vhls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="Truyền Hình"tvg-logo="https://i.imgur.com/UIGZw0y.png",Quốc Phòng VN
-https://live.fptplay53.net/live/media/quocphongvn/live-hls-avc/quocphongvn-avc1_4000000=10000-mp4a_131600=20000.m3u8
-#EXTINF:-1 tvg-id="vietnamtoday" group-title="Truyền Hình" tvg-logo="https://vnepg.site/logos/176.png",VietNam Today
-https://live.fptplay53.net/fnxhd1/vntoday_vhls.smil/chunklist.m3u8
+
+#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/dfGZxST/cchtv1.webp" tvg-id="22b8cd8d92ab071051b41b2c09a65736",HTV1
+https://live.fptplay53.net/epzhd1/htv1_hls.smil/chunklist.m3u8
+#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.imgur.com/Yc3cmAi.png",HTV2
+https://live.fptplay53.net/epzhd1/htv2hd_vhls.smil/chunklist.m3u8
+#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/8rWVRBf/cchtv3.webp" tvg-id="f73a137acaaf6d8b228e644912b812bb",HTV3
+https://live.fptplay53.net/epzhd1/htv3_hls.smil/chunklist.m3u8
+#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/cw0Jym1/cchtvkey.webp" tvg-id="6dcfc8a79c8341d5a4c5bf672928fba4",HTV4
+https://live.fptplay53.net/epzhd1/htv4_hls.smil/chunklist.m3u8
+#EXTINF:-1 group-title="Truyền Hình"tvg-logo="https://i.imgur.com/jeunb3Y.png",HTV5
+https://live.fptplay53.net/fnxsd1/btv9_hls.smil/chunklist.m3u8
+#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/bX1LD0H/cchtv7.webp" tvg-id="1b155d629006898bfada5abdad9adb45",HTV7
+https://live.fptplay53.net/epzhd1/htv7hd_vhls.smil/chunklist_b5000000.m3u8
+#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/j6BCF0M/cchtv9.webp" tvg-id="a5912ec47c1aef3975515bede476bbcf",HTV9
+https://live-a.fptplay53.net/live/media/htv9/live247-hls-avc/htv9-avc1_5600000=10000-mp4a_131600=20000.m3u8
+#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/R6myMTc/cchtvthethao.webp" tvg-id="cecd99d151bcb92a3866024f08c07b9f",HTV Thể Thao
+https://live.fptplay53.net/epzhd1/htvcthethao_vhls.smil/chunklist.m3u8
+#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/Z1Dhx8X/cchtvccanhac.webp" tvg-id="4009e0a06b8eba5abf6be992510a7eac",HTVC Ca Nhạc
+https://live.fptplay53.net/epzhd1/htvcmusic_vhls.smil/chunklist.m3u8
+#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/25yJ9rv/cchtvcdulich.webp" tvg-id="ef5e2ae9aacf989d46128376630a73d0",HTVC Du Lịch và Cuộc Sống
+https://live.fptplay53.net/epzhd1/htvcdulich_vhls.smil/chunklist.m3u8
+#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/xgtfrnk/cchtvcgiadinh.webp" tvg-id="aef2a410c83827f38f23b43163e41c0d",HTVC Gia Đình
+https://live.fptplay53.net/epzhd1/htvcgiadinh_vhls.smil/chunklist.m3u8
+#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/YB72fKd/cchtvcphim.webp" tvg-id="61894f47d320186ea79a37150dcf370d",HTVC Phim
+https://live.fptplay53.net/epzhd1/htvcmovieshd_vhls.smil/chunklist.m3u8
+#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/d6ZbQc7/cchtvcphunu.webp" tvg-id="bfba9bb09043b9a567c4f8ef59bca7dc",HTVC Phụ Nữ
+https://live.fptplay53.net/epzhd1/htvcphunu_vhls.smil/chunklist.m3u8
+#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/Z6Hf06M/cchtvcthuanviet.webp" tvg-id="58b9fe39a6a2666a07b921bdd83a2ba4",HTVC Thuần Việt
+https://live.fptplay53.net/epzhd1/htvcthuanviethd_vhls.smil/chunklist.m3u8
+#EXTINF:-1 group-title="Truyền Hình" tvg-logo="https://i.ibb.co/vhLGXcK/cchtvcplus.webp" tvg-id="fd51b6c6836ec943e7ad21f0036f879e",HTVC Plus
+https://live.fptplay53.net/epzhd1/htvcplus_vhls.smil/chunklist.m3u8
