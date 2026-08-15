@@ -283,7 +283,7 @@ def main():
         print("Không thay đổi file nào.")
         sys.exit(1)
 
-    results = [update_target_file(filename, source_map) for filename in TARGET_FILES]
+    results = [update_target_file(filename, source_map) for filename in TARGET_FILE]
     existing_files = sum(result["exists"] for result in results)
     changed_files = sum(result["changed"] for result in results)
 
