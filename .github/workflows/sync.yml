@@ -2,6 +2,7 @@ name: Sync
 
 on:
   schedule:
+    # Chạy tự động mỗi 30 phút
     - cron: '*/30 * * * *'
   workflow_dispatch: {}
 
@@ -20,11 +21,15 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Install dependencies
-        run: pip install requests
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
 
       - name: Run sync script
+        # Lưu ý: Sửa thành `python update.py` nếu file script để ngay ngoài thư mục gốc
         run: python scripts/update.py
 
       - name: Commit and push if changed
@@ -37,6 +42,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Không có thay đổi, bỏ qua commit."
           else
-            git commit -m "chore: auto sync channels"
+            git commit -m "chore: auto sync channels [skip ci]"
             git push
           fi
+          
