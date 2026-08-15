@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 
-import sys
 import re
-import requests
+import sys
 import unicodedata
+from pathlib import Path
+
+import requests
+
 
 SOURCE_URL = "http://tv.vietanhtv.top/tv"
 
@@ -14,34 +17,27 @@ TARGET_FILES = [
 
 
 def fetch(url: str) -> str:
-    r = requests.get(
+    response = requests.get(
         url,
         timeout=30,
-        headers={"User-Agent": "Mozilla/5.0"}
+        headers={"User-Agent": "Mozilla/5.0"},
     )
-    r.raise_for_status()
-    return r.text
+    response.raise_for_status()
+    return response.text
 
 
 def split_blocks(text: str):
-    """
-    Tách playlist thành các block bắt đầu từ #EXTINF.
-    """
-    lines = text.splitlines()
-
+    """Tách playlist thành các block bắt đầu bằng #EXTINF."""
     blocks = []
     current = []
 
-    for line in lines:
+    for line in text.splitlines():
         if line.startswith("#EXTINF"):
             if current:
                 blocks.append(current)
-
             current = [line]
-
-        else:
-            if current:
-                current.append(line)
+        elif current:
+            current.append(line)
 
     if current:
         blocks.append(current)
@@ -49,72 +45,36 @@ def split_blocks(text: str):
     return blocks
 
 
-def get_channel_name(block):
-    """
-    Lấy tên kênh nằm sau dấu phẩy cuối cùng của #EXTINF.
-    """
+def get_channel_name(block) -> str:
+    """Lấy tên kênh nằm sau dấu phẩy cuối cùng của #EXTINF."""
+    if not block or "," not in block[0]:
+        return ""
+    return block[0].rsplit(",", 1)[1].strip()
+
+
+def get_group_title(block) -> str:
+    """Lấy group-title trong #EXTINF."""
     if not block:
         return ""
-
-    extinf = block[0]
-
-    if "," not in extinf:
-        return ""
-
-    return extinf.rsplit(",", 1)[1].strip()
-
-
-def get_group_title(block):
-    """
-    Lấy group-title trong #EXTINF.
-    """
-    if not block:
-        return ""
-
-    extinf = block[0]
 
     match = re.search(
         r'group-title\s*=\s*"([^"]*)"',
-        extinf,
-        flags=re.IGNORECASE
+        block[0],
+        flags=re.IGNORECASE,
     )
-
-    if not match:
-        return ""
-
-    return match.group(1).strip()
+    return match.group(1).strip() if match else ""
 
 
 def normalize_text(text: str) -> str:
-    """
-    Chuẩn hóa text để đối chiếu.
-
-    Chỉ dùng cho việc match.
-    Không làm thay đổi playlist thực tế.
-    """
-    text = text.strip().lower()
-
-    # đ -> d
-    text = text.replace("đ", "d")
-
-    # Bỏ dấu tiếng Việt
+    """Chuẩn hóa chuỗi chỉ để đối chiếu, không sửa dữ liệu playlist."""
+    text = text.strip().lower().replace("đ", "d")
     text = unicodedata.normalize("NFD", text)
-
     text = "".join(
-        c for c in text
-        if unicodedata.category(c) != "Mn"
+        char for char in text if unicodedata.category(char) != "Mn"
     )
-
-    # Chuẩn hóa &
     text = text.replace("&", "and")
-
-    # Bỏ ký tự đặc biệt
     text = re.sub(r"[^a-z0-9]+", " ", text)
-
-    # Gom khoảng trắng
-    text = re.sub(r"\s+", " ", text).strip()
-
-    return text
+    return re.sub(r"\s+", " ", text).strip()
 
 
 def normalize_name(name: str) -> str:
@@ -125,44 +85,53 @@ def normalize_group(group: str) -> str:
     return normalize_text(group)
 
 
+def is_radio_block(block) -> bool:
+    """Nhận diện block radio trong nguồn VietAnh để loại trước khi tạo map."""
+    if not block:
+        return False
+
+    name = normalize_name(get_channel_name(block))
+    group = normalize_group(get_group_title(block))
+    extinf = normalize_text(block[0])
+
+    # Nhóm hoặc thông tin kênh ghi rõ loại nội dung radio/phát thanh.
+    if re.search(r"\b(radio|phat thanh|voice of vietnam)\b", group):
+        return True
+    if re.search(r"\b(radio|phat thanh|voice of vietnam)\b", extinf):
+        return True
+
+    # Các đài VOV và tần số FM/MHz thường gặp.
+    if re.search(r"\bvov(?:\s*[1-9])?\b", name):
+        return True
+    if re.search(r"\b\d{2,3}(?:\s*\.\s*\d+)?\s*(?:fm|mhz)\b", name):
+        return True
+    if re.search(r"\bfm\b", name) or re.search(r"\bam\b", name):
+        return True
+
+    return False
+
+
 def build_source_map(source_text: str):
-    """
-    Tạo map theo:
-
-        (group-title, tên kênh) -> block VietAnh
-
-    Ví dụ:
-
-        ("vtvcab", "on football")
-        ("vtv", "vtv1")
-        ("k", "k sport 1")
-
-    Nhờ đó sẽ không lấy nhầm kênh cùng tên
-    nhưng nằm ở group-title khác.
-    """
+    """Tạo map (group-title, tên kênh) -> block VietAnh, bỏ toàn bộ radio."""
     source_blocks = split_blocks(source_text)
-
     source_map = {}
     duplicate_keys = set()
+    radio_count = 0
 
     for block in source_blocks:
-        name = get_channel_name(block)
-        group = get_group_title(block)
-
-        if not name:
+        if is_radio_block(block):
+            radio_count += 1
             continue
 
+        name = get_channel_name(block)
+        group = get_group_title(block)
         name_key = normalize_name(name)
         group_key = normalize_group(group)
 
         if not name_key:
             continue
 
-        key = (
-            group_key,
-            name_key,
-        )
-
+        key = (group_key, name_key)
         if key in source_map:
             duplicate_keys.add(key)
 
@@ -172,45 +141,16 @@ def build_source_map(source_text: str):
             "block": block,
         }
 
-    return source_blocks, source_map, duplicate_keys
+    return source_blocks, source_map, duplicate_keys, radio_count
 
 
 def merge_block(target_block, source_block):
-    """
-    Giữ nguyên DUY NHẤT dòng #EXTINF của target.
-
-    Toàn bộ phần còn lại lấy từ VietAnh.
-
-    Target:
-        #EXTINF...
-        metadata cũ
-        URL cũ
-
-    Source:
-        #EXTINF...
-        #EXTVLCOPT...
-        #KODIPROP...
-        license_key mới
-        URL mới
-
-    Kết quả:
-        #EXTINF của TARGET
-        toàn bộ phần còn lại của SOURCE
-    """
-
+    """Giữ nguyên #EXTINF target và thay toàn bộ body bằng body nguồn."""
     if not target_block:
         return source_block
-
     if not source_block:
         return target_block
-
-    new_block = [target_block[0]]
-
-    # Giữ nguyên #EXTINF target
-    # Lấy toàn bộ phần phía sau từ VietAnh
-    new_block.extend(source_block[1:])
-
-    return new_block
+    return [target_block[0], *source_block[1:]]
 
 
 def update_target_file(target_file: str, source_map: dict):
@@ -219,103 +159,44 @@ def update_target_file(target_file: str, source_map: dict):
     print(f" ĐANG XỬ LÝ: {target_file}")
     print("=" * 72)
 
+    path = Path(target_file)
     try:
-        with open(target_file, "r", encoding="utf-8") as f:
-            target_text = f.read()
-
+        target_text = path.read_text(encoding="utf-8")
     except FileNotFoundError:
         print(f"[BỎ QUA] Không tìm thấy file: {target_file}")
-
-        return {
-            "file": target_file,
-            "exists": False,
-            "changed": False,
-            "updated": 0,
-            "same": 0,
-            "not_found": 0,
-        }
-
-    except Exception as e:
-        print(f"[LỖI] Không đọc được {target_file}: {e}")
-
-        return {
-            "file": target_file,
-            "exists": True,
-            "changed": False,
-            "updated": 0,
-            "same": 0,
-            "not_found": 0,
-        }
+        return dict(file=target_file, exists=False, changed=False,
+                    updated=0, same=0, not_found=0)
+    except Exception as error:
+        print(f"[LỖI] Không đọc được {target_file}: {error}")
+        return dict(file=target_file, exists=True, changed=False,
+                    updated=0, same=0, not_found=0)
 
     target_lines = target_text.splitlines()
-
-    # ---------------------------------------------------------
-    # Giữ nguyên header trước #EXTINF đầu tiên
-    # ---------------------------------------------------------
-
-    idx = 0
-    header_lines = []
-
-    while idx < len(target_lines):
-        if target_lines[idx].startswith("#EXTINF"):
-            break
-
-        header_lines.append(target_lines[idx])
-        idx += 1
-
-    target_blocks = split_blocks(
-        "\n".join(target_lines[idx:])
+    first_block = next(
+        (i for i, line in enumerate(target_lines) if line.startswith("#EXTINF")),
+        len(target_lines),
     )
-
-    # ---------------------------------------------------------
-    # Lấy danh sách group-title có trong target
-    # ---------------------------------------------------------
+    header_lines = target_lines[:first_block]
+    target_blocks = split_blocks("\n".join(target_lines[first_block:]))
 
     target_groups = {}
-
     for block in target_blocks:
         group = get_group_title(block)
-
-        if not group:
-            continue
-
         group_key = normalize_group(group)
-
         if group_key:
             target_groups[group_key] = group
 
     print(f"Tổng số kênh : {len(target_blocks)}")
     print(f"Tổng số nhóm : {len(target_groups)}")
-
     if target_groups:
-        print()
-        print("Các nhóm trong playlist:")
-
+        print("\nCác nhóm trong playlist:")
         for group in target_groups.values():
             print(f"  - {group}")
 
-    print()
-
     updated_blocks = []
-
-    updated_count = 0
-    same_count = 0
-    not_found_count = 0
-
-    # ---------------------------------------------------------
-    # Đối chiếu từng kênh
-    #
-    # BẮT BUỘC:
-    #
-    #   1. group-title giống nhau
-    #   2. tên kênh giống nhau
-    #
-    # Nếu chỉ giống tên nhưng khác group:
-    # KHÔNG UPDATE
-    # ---------------------------------------------------------
+    updated_count = same_count = not_found_count = 0
 
     for target_block in target_blocks:
-
         target_name = get_channel_name(target_block)
         target_group = get_group_title(target_block)
 
@@ -323,297 +204,100 @@ def update_target_file(target_file: str, source_map: dict):
             updated_blocks.append(target_block)
             continue
 
-        name_key = normalize_name(target_name)
-        group_key = normalize_group(target_group)
-
-        key = (
-            group_key,
-            name_key,
-        )
-
+        key = (normalize_group(target_group), normalize_name(target_name))
         source = source_map.get(key)
-
-        # -----------------------------------------------------
-        # Không tìm thấy đúng group + tên
-        # -----------------------------------------------------
+        label = f"[{target_group}] {target_name}" if target_group else target_name
 
         if not source:
-
-            if target_group:
-                print(
-                    f"[KHÔNG TÌM THẤY] "
-                    f"[{target_group}] {target_name}"
-                )
-
-            else:
-                print(
-                    f"[KHÔNG TÌM THẤY] "
-                    f"{target_name}"
-                )
-
+            print(f"[KHÔNG TÌM THẤY] {label}")
             updated_blocks.append(target_block)
-
             not_found_count += 1
             continue
 
-        source_block = source["block"]
-
-        # -----------------------------------------------------
-        # Tạo block mới
-        #
-        # #EXTINF        = TARGET
-        # phần còn lại  = VIETANH
-        # -----------------------------------------------------
-
-        new_block = merge_block(
-            target_block,
-            source_block
-        )
-
-        # -----------------------------------------------------
-        # Không có thay đổi
-        # -----------------------------------------------------
-
+        new_block = merge_block(target_block, source["block"])
         if new_block == target_block:
-
-            if target_group:
-                print(
-                    f"[GIỮ NGUYÊN]     "
-                    f"[{target_group}] {target_name}"
-                )
-
-            else:
-                print(
-                    f"[GIỮ NGUYÊN]     "
-                    f"{target_name}"
-                )
-
+            print(f"[GIỮ NGUYÊN]     {label}")
             updated_blocks.append(target_block)
-
             same_count += 1
-            continue
-
-        # -----------------------------------------------------
-        # Có thay đổi
-        # -----------------------------------------------------
-
-        if target_group:
-            print(
-                f"[UPDATE]          "
-                f"[{target_group}] {target_name}"
-            )
-
         else:
-            print(
-                f"[UPDATE]          "
-                f"{target_name}"
-            )
-
-        old_body = target_block[1:]
-        new_body = source_block[1:]
-
-        if old_body != new_body:
-            print(
-                "  Đồng bộ metadata + link từ VietAnh"
-            )
-
-        updated_blocks.append(new_block)
-
-        updated_count += 1
-
-    # ---------------------------------------------------------
-    # Ghép lại playlist
-    # ---------------------------------------------------------
+            print(f"[UPDATE]          {label}")
+            print("  Đồng bộ metadata + link từ VietAnh")
+            updated_blocks.append(new_block)
+            updated_count += 1
 
     output_lines = list(header_lines)
-
     for block in updated_blocks:
         output_lines.extend(block)
+    new_text = "\n".join(output_lines) + ("\n" if output_lines else "")
+    normalized_old_text = target_text.replace("\r\n", "\n").replace("\r", "\n")
+    changed = new_text != normalized_old_text
 
-    new_text = "\n".join(output_lines)
-
-    if new_text:
-        new_text += "\n"
-
-    changed = new_text != target_text
-
-    print()
-    print("-" * 72)
-
+    print("\n" + "-" * 72)
     if not changed:
         print(f"{target_file}: Không có thay đổi.")
-
     else:
         try:
-            with open(
-                target_file,
-                "w",
-                encoding="utf-8",
-                newline="\n"
-            ) as f:
-                f.write(new_text)
-
+            path.write_text(new_text, encoding="utf-8", newline="\n")
             print(f"Đã cập nhật file: {target_file}")
-
-        except Exception as e:
-            print(f"[LỖI] Không ghi được {target_file}: {e}")
+        except Exception as error:
+            print(f"[LỖI] Không ghi được {target_file}: {error}")
             changed = False
 
-    print()
-    print(f"Đã đồng bộ     : {updated_count}")
+    print(f"\nĐã đồng bộ     : {updated_count}")
     print(f"Đã giống nguồn : {same_count}")
     print(f"Không tìm thấy : {not_found_count}")
     print("-" * 72)
 
-    return {
-        "file": target_file,
-        "exists": True,
-        "changed": changed,
-        "updated": updated_count,
-        "same": same_count,
-        "not_found": not_found_count,
-    }
+    return dict(file=target_file, exists=True, changed=changed,
+                updated=updated_count, same=same_count,
+                not_found=not_found_count)
 
 
 def main():
     print("=" * 72)
     print("       UPDATE PLAYLIST THEO NHÓM KÊNH VIETANH")
     print("=" * 72)
-
-    print()
-    print("Nguồn:")
-    print(f"  {SOURCE_URL}")
-    print()
-
-    # ---------------------------------------------------------
-    # Tải VietAnh duy nhất 1 lần
-    # ---------------------------------------------------------
+    print(f"\nNguồn:\n  {SOURCE_URL}\n")
 
     try:
         source_text = fetch(SOURCE_URL)
-
-    except requests.RequestException as e:
-        print("[LỖI] Không tải được playlist VietAnh:")
-        print(f"  {e}")
+    except requests.RequestException as error:
+        print(f"[LỖI] Không tải được playlist VietAnh:\n  {error}")
+        sys.exit(1)
+    except Exception as error:
+        print(f"[LỖI] Có lỗi khi tải playlist:\n  {error}")
         sys.exit(1)
 
-    except Exception as e:
-        print("[LỖI] Có lỗi khi tải playlist:")
-        print(f"  {e}")
-        sys.exit(1)
-
-    # ---------------------------------------------------------
-    # Phân tích nguồn
-    # ---------------------------------------------------------
-
-    source_blocks, source_map, duplicate_keys = build_source_map(
+    source_blocks, source_map, duplicate_keys, radio_count = build_source_map(
         source_text
     )
-
-    print(
-        f"Tìm thấy {len(source_blocks)} block "
-        "trong playlist VietAnh."
-    )
-
-    print(
-        f"Tạo map được {len(source_map)} "
-        "cặp nhóm + kênh."
-    )
+    print(f"Tìm thấy {len(source_blocks)} block trong playlist VietAnh.")
+    print(f"Đã loại {radio_count} block radio khỏi nguồn.")
+    print(f"Tạo map được {len(source_map)} cặp nhóm + kênh TV.")
 
     if duplicate_keys:
-        print()
         print(
-            f"Cảnh báo: {len(duplicate_keys)} cặp "
-            "group-title + tên kênh bị trùng."
+            f"Cảnh báo: {len(duplicate_keys)} cặp group-title + tên kênh bị trùng."
         )
-
-        print(
-            "Nếu trùng hoàn toàn cả group và tên, "
-            "sẽ dùng block xuất hiện sau cùng."
-        )
+        print("Kênh trùng hoàn toàn sẽ dùng block xuất hiện sau cùng.")
 
     if not source_map:
-        print()
-        print("[LỖI] Playlist VietAnh không có dữ liệu hợp lệ.")
+        print("\n[LỖI] Playlist VietAnh không có dữ liệu TV hợp lệ.")
         print("Không thay đổi file nào.")
         sys.exit(1)
 
-    # ---------------------------------------------------------
-    # Update toàn bộ target
-    # ---------------------------------------------------------
+    results = [update_target_file(filename, source_map) for filename in TARGET_FILES]
+    existing_files = sum(result["exists"] for result in results)
+    changed_files = sum(result["changed"] for result in results)
 
-    results = []
-
-    for target_file in TARGET_FILES:
-
-        result = update_target_file(
-            target_file,
-            source_map
-        )
-
-        results.append(result)
-
-    # ---------------------------------------------------------
-    # Tổng kết
-    # ---------------------------------------------------------
-
-    existing_files = sum(
-        1
-        for r in results
-        if r["exists"]
-    )
-
-    changed_files = sum(
-        1
-        for r in results
-        if r["changed"]
-    )
-
-    total_updated = sum(
-        r["updated"]
-        for r in results
-    )
-
-    total_same = sum(
-        r["same"]
-        for r in results
-    )
-
-    total_not_found = sum(
-        r["not_found"]
-        for r in results
-    )
-
-    print()
-    print("=" * 72)
+    print("\n" + "=" * 72)
     print("                           TỔNG KẾT")
     print("=" * 72)
-
-    print(
-        f"File tìm thấy    : "
-        f"{existing_files}/{len(TARGET_FILES)}"
-    )
-
-    print(
-        f"File có thay đổi : "
-        f"{changed_files}"
-    )
-
-    print(
-        f"Kênh đồng bộ     : "
-        f"{total_updated}"
-    )
-
-    print(
-        f"Kênh đã giống    : "
-        f"{total_same}"
-    )
-
-    print(
-        f"Không tìm thấy   : "
-        f"{total_not_found}"
-    )
-
+    print(f"File tìm thấy    : {existing_files}/{len(TARGET_FILES)}")
+    print(f"File có thay đổi : {changed_files}")
+    print(f"Kênh đồng bộ     : {sum(r['updated'] for r in results)}")
+    print(f"Kênh đã giống    : {sum(r['same'] for r in results)}")
+    print(f"Không tìm thấy   : {sum(r['not_found'] for r in results)}")
     print("=" * 72)
 
 
