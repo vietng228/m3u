@@ -64,74 +64,122 @@ def get_channel_name(block):
     return extinf.rsplit(",", 1)[1].strip()
 
 
-def normalize_name(name: str) -> str:
+def get_group_title(block):
     """
-    Chuẩn hóa tên chỉ để match.
-    Không làm thay đổi tên trong playlist đích.
+    Lấy group-title trong #EXTINF.
     """
-    name = name.strip().lower()
+    if not block:
+        return ""
+
+    extinf = block[0]
+
+    match = re.search(
+        r'group-title\s*=\s*"([^"]*)"',
+        extinf,
+        flags=re.IGNORECASE
+    )
+
+    if not match:
+        return ""
+
+    return match.group(1).strip()
+
+
+def normalize_text(text: str) -> str:
+    """
+    Chuẩn hóa text để đối chiếu.
+
+    Chỉ dùng cho việc match.
+    Không làm thay đổi playlist thực tế.
+    """
+    text = text.strip().lower()
 
     # đ -> d
-    name = name.replace("đ", "d")
+    text = text.replace("đ", "d")
 
     # Bỏ dấu tiếng Việt
-    name = unicodedata.normalize("NFD", name)
+    text = unicodedata.normalize("NFD", text)
 
-    name = "".join(
-        c for c in name
+    text = "".join(
+        c for c in text
         if unicodedata.category(c) != "Mn"
     )
 
     # Chuẩn hóa &
-    name = name.replace("&", "and")
+    text = text.replace("&", "and")
 
     # Bỏ ký tự đặc biệt
-    name = re.sub(r"[^a-z0-9]+", " ", name)
+    text = re.sub(r"[^a-z0-9]+", " ", text)
 
     # Gom khoảng trắng
-    name = re.sub(r"\s+", " ", name).strip()
+    text = re.sub(r"\s+", " ", text).strip()
 
-    return name
+    return text
+
+
+def normalize_name(name: str) -> str:
+    return normalize_text(name)
+
+
+def normalize_group(group: str) -> str:
+    return normalize_text(group)
 
 
 def build_source_map(source_text: str):
     """
-    Tạo map:
+    Tạo map theo:
 
-        tên kênh chuẩn hóa -> block đầy đủ của VietAnh
+        (group-title, tên kênh) -> block VietAnh
+
+    Ví dụ:
+
+        ("vtvcab", "on football")
+        ("vtv", "vtv1")
+        ("k", "k sport 1")
+
+    Nhờ đó sẽ không lấy nhầm kênh cùng tên
+    nhưng nằm ở group-title khác.
     """
     source_blocks = split_blocks(source_text)
 
     source_map = {}
-    duplicate_names = set()
+    duplicate_keys = set()
 
     for block in source_blocks:
         name = get_channel_name(block)
+        group = get_group_title(block)
 
         if not name:
             continue
 
-        key = normalize_name(name)
+        name_key = normalize_name(name)
+        group_key = normalize_group(group)
 
-        if not key:
+        if not name_key:
             continue
 
+        key = (
+            group_key,
+            name_key,
+        )
+
         if key in source_map:
-            duplicate_names.add(key)
+            duplicate_keys.add(key)
 
         source_map[key] = {
             "name": name,
+            "group": group,
             "block": block,
         }
 
-    return source_blocks, source_map, duplicate_names
+    return source_blocks, source_map, duplicate_keys
 
 
 def merge_block(target_block, source_block):
     """
     Giữ nguyên DUY NHẤT dòng #EXTINF của target.
 
-    Toàn bộ phần còn lại lấy từ source VietAnh.
+    Toàn bộ phần còn lại lấy từ VietAnh.
 
     Target:
         #EXTINF...
@@ -158,7 +206,8 @@ def merge_block(target_block, source_block):
 
     new_block = [target_block[0]]
 
-    # Lấy toàn bộ phần sau #EXTINF từ VietAnh
+    # Giữ nguyên #EXTINF target
+    # Lấy toàn bộ phần phía sau từ VietAnh
     new_block.extend(source_block[1:])
 
     return new_block
@@ -218,7 +267,33 @@ def update_target_file(target_file: str, source_map: dict):
         "\n".join(target_lines[idx:])
     )
 
-    print(f"Tổng số kênh: {len(target_blocks)}")
+    # ---------------------------------------------------------
+    # Lấy danh sách group-title có trong target
+    # ---------------------------------------------------------
+
+    target_groups = {}
+
+    for block in target_blocks:
+        group = get_group_title(block)
+
+        if not group:
+            continue
+
+        group_key = normalize_group(group)
+
+        if group_key:
+            target_groups[group_key] = group
+
+    print(f"Tổng số kênh : {len(target_blocks)}")
+    print(f"Tổng số nhóm : {len(target_groups)}")
+
+    if target_groups:
+        print()
+        print("Các nhóm trong playlist:")
+
+        for group in target_groups.values():
+            print(f"  - {group}")
+
     print()
 
     updated_blocks = []
@@ -229,23 +304,52 @@ def update_target_file(target_file: str, source_map: dict):
 
     # ---------------------------------------------------------
     # Đối chiếu từng kênh
+    #
+    # BẮT BUỘC:
+    #
+    #   1. group-title giống nhau
+    #   2. tên kênh giống nhau
+    #
+    # Nếu chỉ giống tên nhưng khác group:
+    # KHÔNG UPDATE
     # ---------------------------------------------------------
 
     for target_block in target_blocks:
 
         target_name = get_channel_name(target_block)
+        target_group = get_group_title(target_block)
 
         if not target_name:
             updated_blocks.append(target_block)
             continue
 
-        key = normalize_name(target_name)
+        name_key = normalize_name(target_name)
+        group_key = normalize_group(target_group)
+
+        key = (
+            group_key,
+            name_key,
+        )
 
         source = source_map.get(key)
 
-        # Không tìm thấy bên VietAnh
+        # -----------------------------------------------------
+        # Không tìm thấy đúng group + tên
+        # -----------------------------------------------------
+
         if not source:
-            print(f"[KHÔNG TÌM THẤY] {target_name}")
+
+            if target_group:
+                print(
+                    f"[KHÔNG TÌM THẤY] "
+                    f"[{target_group}] {target_name}"
+                )
+
+            else:
+                print(
+                    f"[KHÔNG TÌM THẤY] "
+                    f"{target_name}"
+                )
 
             updated_blocks.append(target_block)
 
@@ -254,37 +358,71 @@ def update_target_file(target_file: str, source_map: dict):
 
         source_block = source["block"]
 
-        # Tạo block mới:
-        # giữ #EXTINF target
-        # lấy mọi thứ khác từ VietAnh
+        # -----------------------------------------------------
+        # Tạo block mới
+        #
+        # #EXTINF        = TARGET
+        # phần còn lại  = VIETANH
+        # -----------------------------------------------------
+
         new_block = merge_block(
             target_block,
             source_block
         )
 
+        # -----------------------------------------------------
+        # Không có thay đổi
+        # -----------------------------------------------------
+
         if new_block == target_block:
-            print(f"[GIỮ NGUYÊN]     {target_name}")
+
+            if target_group:
+                print(
+                    f"[GIỮ NGUYÊN]     "
+                    f"[{target_group}] {target_name}"
+                )
+
+            else:
+                print(
+                    f"[GIỮ NGUYÊN]     "
+                    f"{target_name}"
+                )
 
             updated_blocks.append(target_block)
 
             same_count += 1
             continue
 
-        print(f"[UPDATE]          {target_name}")
+        # -----------------------------------------------------
+        # Có thay đổi
+        # -----------------------------------------------------
 
-        # Hiển thị thay đổi phần kỹ thuật
+        if target_group:
+            print(
+                f"[UPDATE]          "
+                f"[{target_group}] {target_name}"
+            )
+
+        else:
+            print(
+                f"[UPDATE]          "
+                f"{target_name}"
+            )
+
         old_body = target_block[1:]
         new_body = source_block[1:]
 
         if old_body != new_body:
-            print("  Đồng bộ metadata + link từ VietAnh")
+            print(
+                "  Đồng bộ metadata + link từ VietAnh"
+            )
 
         updated_blocks.append(new_block)
 
         updated_count += 1
 
     # ---------------------------------------------------------
-    # Ghép playlist mới
+    # Ghép lại playlist
     # ---------------------------------------------------------
 
     output_lines = list(header_lines)
@@ -339,7 +477,7 @@ def update_target_file(target_file: str, source_map: dict):
 
 def main():
     print("=" * 72)
-    print("          UPDATE PLAYLIST THEO VIETANH")
+    print("       UPDATE PLAYLIST THEO NHÓM KÊNH VIETANH")
     print("=" * 72)
 
     print()
@@ -368,7 +506,7 @@ def main():
     # Phân tích nguồn
     # ---------------------------------------------------------
 
-    source_blocks, source_map, duplicate_names = build_source_map(
+    source_blocks, source_map, duplicate_keys = build_source_map(
         source_text
     )
 
@@ -378,17 +516,20 @@ def main():
     )
 
     print(
-        f"Tạo map được {len(source_map)} kênh."
+        f"Tạo map được {len(source_map)} "
+        "cặp nhóm + kênh."
     )
 
-    if duplicate_names:
+    if duplicate_keys:
+        print()
         print(
-            f"Cảnh báo: {len(duplicate_names)} tên kênh "
-            "bị trùng trong nguồn."
+            f"Cảnh báo: {len(duplicate_keys)} cặp "
+            "group-title + tên kênh bị trùng."
         )
 
         print(
-            "Kênh trùng sẽ dùng block xuất hiện sau cùng."
+            "Nếu trùng hoàn toàn cả group và tên, "
+            "sẽ dùng block xuất hiện sau cùng."
         )
 
     if not source_map:
@@ -404,6 +545,7 @@ def main():
     results = []
 
     for target_file in TARGET_FILES:
+
         result = update_target_file(
             target_file,
             source_map
