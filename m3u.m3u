@@ -669,19 +669,14 @@ https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/ap.smil/manifest.mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=a7c942778e874d43be92b8d0a0cd11b4:6d54358306571658ffdb952c6560688b
 https://livevlisctcdnw.seenow.vn/mean/OUTDOORCHANNEL/manifest.mpd
-#EXTINF:-1 tvg-id="channelnewsasia" group-title="Quốc Tế" tvg-logo="https://freem3u.xyz/static/images/global/cna.png", Channel News Asia
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://tv.vietanhtv.top/tv360/tv360.php?id=112
-#EXTINF:-1 tvg-id="tv5monde" group-title="Quốc Tế" tvg-logo="https://freem3u.xyz/static/images/global/tv5monde.png", TV5
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://liveh12.vtvprime.vn/hls/TV5/index.m3u8
+
 #EXTINF:-1 tvg-id="discovery" group-title="Quốc Tế" tvg-logo="https://freem3u.xyz/static/images/global/discovery-channel.png", Discovery
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=eb4160ea553a321d899553e4e796fec2:bea5a07157e0c4d17b11ab399517f952
 https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/dsc.smil/manifest.mpd
-#EXTINF:-1 tvg-id="tlc" group-title="Quốc Tế" tvg-logo="https://freem3u.xyz/static/images/global/tlc.png", Travel Living Channel
+#EXTINF:-1 tvg-id="tlc" group-title="Quốc Tế" tvg-logo="https://freem3u.xyz/static/images/global/tlc.png", TLC
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
@@ -699,9 +694,7 @@ https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/dscasia.smil/manifest.mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=c1d9f25701023508bfa6737e3a8c7001:30c3613e9b06e0f7cc201014f31bf5d8
 https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/ftv.smil/manifest.mpd
-#EXTINF:-1 tvg-id="afnhd" group-title="Quốc Tế" tvg-logo="https://freem3u.xyz/static/images/global/afnhd.png", Asia Food Network 
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://tv.vietanhtv.top/tv360/tv360.php?id=215
+
 #EXTINF:-1 tvg-id="hgtv" group-title="Quốc Tế" tvg-logo="https://freem3u.xyz/static/images/global/hgtv.png", HGTV
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 https://liveh12vng.vtvprime.vn/hls/HGTV/index.m3u8
@@ -714,13 +707,13 @@ https://live.fptplay53.net/fnxhd2/nhkworld_vhls.smil/chunklist.m3u8
 #EXTINF:-1 tvg-id="france24" group-title="Quốc Tế" tvg-logo="https://freem3u.xyz/static/images/global/france24_fr.png", France 24
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 https://live.fptplay53.net/fnxhd2/france24_hls.smil/chunklist.m3u8
-#EXTINF:-1 tvg-id="cnbcsd" group-title="Quốc Tế" tvg-logo="https://freem3u.xyz/static/images/global/cnbc.png", CNBC SD
+#EXTINF:-1 tvg-id="cnbcsd" group-title="Quốc Tế" tvg-logo="https://freem3u.xyz/static/images/global/cnbc.png", CNBC
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 https://live.fptplay53.net/fnxsd1/cnbc_hls.smil/chunklist.m3u8
 #EXTINF:-1 tvg-id="historyhd" group-title="Quốc Tế" tvg-logo="https://freem3u.xyz/static/images/global/history.png", History 
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 https://liveh12vng.vtvprime.vn/hls/HISTORY/index.m3u8
-#EXTINF:-1 tvg-id="dw" group-title="Quốc Tế" tvg-logo="https://freem3u.xyz/static/images/global/dw.png", DW - Deutsche Welle
+#EXTINF:-1 tvg-id="dw" group-title="Quốc Tế" tvg-logo="https://freem3u.xyz/static/images/global/dw.png", DW
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 https://live.fptplay53.net/fnxhd2/dwenglish_hls.smil/chunklist.m3u8
 #EXTINF:-1 tvg-id="cnn" group-title="Quốc Tế" tvg-logo="https://freem3u.xyz/static/images/global/cnn.png", CNN
