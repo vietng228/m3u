@@ -6,8 +6,11 @@ import requests
 import unicodedata
 
 SOURCE_URL = "http://tv.vietanhtv.top/tv"
-TARGET_FILE = "m3u.m3u"
-
+TARGET_FILES = [
+    "m3u.m3u",
+    "new.m3u",
+    "test.m3u",
+]
 
 def fetch(url: str) -> str:
     r = requests.get(
