@@ -10,10 +10,7 @@ import requests
 
 SOURCE_URL = "http://tv.vietanhtv.top/tv"
 
-TARGET_FILES = [
-    "m3u.m3u",
-    "test.m3u",
-]
+TARGET_FILES = "m3u.m3u"
 
 
 def fetch(url: str) -> str:
