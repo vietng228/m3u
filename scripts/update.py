@@ -91,13 +91,11 @@ def is_radio_block(block) -> bool:
     group = normalize_group(get_group_title(block))
     extinf = normalize_text(block[0])
 
-    # Nhóm hoặc thông tin kênh ghi rõ loại nội dung radio/phát thanh.
     if re.search(r"\b(radio|phat thanh|voice of vietnam)\b", group):
         return True
     if re.search(r"\b(radio|phat thanh|voice of vietnam)\b", extinf):
         return True
 
-    # Các đài VOV và tần số FM/MHz thường gặp.
     if re.search(r"\bvov(?:\s*[1-9])?\b", name):
         return True
     if re.search(r"\b\d{2,3}(?:\s*\.\s*\d+)?\s*(?:fm|mhz)\b", name):
@@ -283,18 +281,18 @@ def main():
         print("Không thay đổi file nào.")
         sys.exit(1)
 
-    results = [update_target_file(filename, source_map) for filename in TARGET_FILE]
-    existing_files = sum(result["exists"] for result in results)
-    changed_files = sum(result["changed"] for result in results)
+    # Xử lý trực tiếp 1 file đích
+    result = update_target_file(TARGET_FILE, source_map)
 
     print("\n" + "=" * 72)
     print("                           TỔNG KẾT")
     print("=" * 72)
-    print(f"File tìm thấy    : {existing_files}/{len(TARGET_FILES)}")
-    print(f"File có thay đổi : {changed_files}")
-    print(f"Kênh đồng bộ     : {sum(r['updated'] for r in results)}")
-    print(f"Kênh đã giống    : {sum(r['same'] for r in results)}")
-    print(f"Không tìm thấy   : {sum(r['not_found'] for r in results)}")
+    print(f"File xử lý       : {result['file']}")
+    print(f"Tồn tại          : {'Có' if result['exists'] else 'Không'}")
+    print(f"Có thay đổi      : {'Có' if result['changed'] else 'Không'}")
+    print(f"Kênh đồng bộ     : {result['updated']}")
+    print(f"Kênh đã giống    : {result['same']}")
+    print(f"Không tìm thấy   : {result['not_found']}")
     print("=" * 72)
 
 
