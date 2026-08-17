@@ -62,7 +62,7 @@ def get_group_title(block) -> str:
     return match.group(1).strip() if match else ""
 
 
-def normalize_text(text: str) -> str:
+def normalize_text(text: str, preserve_plus: bool = False) -> str:
     """Chuẩn hóa chuỗi chỉ để đối chiếu, không sửa dữ liệu playlist."""
     text = text.strip().lower().replace("đ", "d")
     text = unicodedata.normalize("NFD", text)
@@ -70,12 +70,17 @@ def normalize_text(text: str) -> str:
         char for char in text if unicodedata.category(char) != "Mn"
     )
     text = text.replace("&", "and")
+
+    if preserve_plus:
+        # Giữ ý nghĩa dấu cộng để ON SPORTS khác ON SPORTS+.
+        text = text.replace("+", " plus ")
+
     text = re.sub(r"[^a-z0-9]+", " ", text)
     return re.sub(r"\s+", " ", text).strip()
 
 
 def normalize_name(name: str) -> str:
-    return normalize_text(name)
+    return normalize_text(name, preserve_plus=True)
 
 
 def normalize_group(group: str) -> str:
