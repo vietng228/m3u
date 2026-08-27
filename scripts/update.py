@@ -8,7 +8,7 @@ from pathlib import Path
 import requests
 
 
-SOURCE_URL = "http://tv.vietanhtv.top/tv"
+SOURCE_URL = "http://tv.vietanhtv.top/sex"
 
 TARGET_FILE = "m3u.m3u"
 
