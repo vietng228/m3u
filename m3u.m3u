@@ -47,7 +47,7 @@ https://live.fptplay53.net/fnxhd2/quocphongvnhd_vhls.smil/chunklist_b5000000.m3u
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV1
 
-#EXTINF:-1 tvg-id="htv2hd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htv2.png",HTV2 HD
+#EXTINF:-1 tvg-id="htv2hd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htv2.png",HTV2
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV2+HD
 
@@ -59,15 +59,15 @@ https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV3
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV+Key
 
-#EXTINF:-1 tvg-id="htv7hd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htv7.png",HTV7 HD
+#EXTINF:-1 tvg-id="htv7hd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htv7.png",HTV7
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV7+HD
 
-#EXTINF:-1 tvg-id="htv9hd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htv9.png",HTV9 HD
+#EXTINF:-1 tvg-id="htv9hd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htv9.png",HTV9
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV9+HD
 
-#EXTINF:-1 tvg-id="htvthethaohd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvthethao.png",HTV Thể Thao HD
+#EXTINF:-1 tvg-id="htvthethaohd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvthethao.png",HTV Thể Thao
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV+Th%E1%BB%83+Thao+HD
 
@@ -75,15 +75,15 @@ https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV+Th%E1%
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Thu%E1%BA%A7n+Vi%E1%BB%87t
 
-#EXTINF:-1 tvg-id="htvcplushd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvcplus.png",HTVC Plus HD
+#EXTINF:-1 tvg-id="htvcplushd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvcplus.png",HTVC Plus
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Plus+HD
 
-#EXTINF:-1 tvg-id="htvcdulichhd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvcdulichcuocsong.png",HTVC Du Lịch HD
+#EXTINF:-1 tvg-id="htvcdulichhd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvcdulichcuocsong.png",HTVC Du Lịch
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Du+L%E1%BB%8Bch+HD
 
-#EXTINF:-1 tvg-id="htvccanhachd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvccanhac.png",HTVC Ca Nhạc HD
+#EXTINF:-1 tvg-id="htvccanhachd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvccanhac.png",HTVC Ca Nhạc
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Ca+Nh%E1%BA%A1c+HD
 
@@ -91,11 +91,11 @@ https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Ca+Nh
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Phim+HD
 
-#EXTINF:-1 tvg-id="htvcgiadinhhd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvcgiadinh.png",HTVC Gia Đình HD
+#EXTINF:-1 tvg-id="htvcgiadinhhd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvcgiadinh.png",HTVC Gia Đình
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Gia+%C4%90%C3%ACnh+HD
 
-#EXTINF:-1 tvg-id="htvcphunuhd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvcphunu.png",HTVC Phụ Nữ HD
+#EXTINF:-1 tvg-id="htvcphunuhd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvcphunu.png",HTVC Phụ Nữ
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Ph%E1%BB%A5+N%E1%BB%AF+HD
 #EXTINF:-1 tvg-id="onviegiaitri" group-title="VTVcab" tvg-logo="https://vietanhtv.id.vn/logo/viegiaitri.png",ON Vie Giải Trí
@@ -263,10 +263,6 @@ https://liveatmvng.vtvprime.vn/live/data8/SCTV22/Live_DASHDRM/SCTV22.mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=https://vietmitv-stream.viet-ng228.workers.dev/channel?group=SCTV&name=SCTV+Phim+T%E1%BB%95ng+H%E1%BB%A3p&kind=license
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=SCTV&name=SCTV+Phim+T%E1%BB%95ng+H%E1%BB%A3p
-
-#EXTINF:-1 tvg-id="sctv4k" group-title="SCTV" tvg-logo="https://vietanhtv.id.vn/logo/sctv4k.png",SCTV4K
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64)
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=SCTV&name=SCTV4K
 
 #EXTINF:-1 tvg-id="thvl1hd" group-title="Địa Phương",Vĩnh Long 1
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36
