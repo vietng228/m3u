@@ -143,9 +143,9 @@ https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+GOLF
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV1
 
-#EXTINF:-1 tvg-id="htv2hd" group-title="HTV",HTV2
+#EXTINF:-1 tvg-id="htv2hd" group-title="HTV",HTV2 HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://live.fptplay53.net/epzhd1/htv2hd_vhls.smil/chunklist_b5000000.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV2+HD
 
 #EXTINF:-1 tvg-id="htv3" group-title="HTV",HTV3
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
@@ -155,46 +155,45 @@ https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV3
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV+Key
 
-#EXTINF:-1 tvg-id="htv7hd" group-title="HTV",HTV7
+#EXTINF:-1 tvg-id="htv7hd" group-title="HTV",HTV7 HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://live.fptplay53.net/epzhd1/htv7hd_vhls.smil/chunklist_b5000000.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV7+HD
 
-#EXTINF:-1 tvg-id="htv9hd" group-title="HTV",HTV9
+#EXTINF:-1 tvg-id="htv9hd" group-title="HTV",HTV9 HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://live.fptplay53.net/epzhd1/htv9hd_vhls.smil/chunklist_b5000000.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV9+HD
 
-#EXTINF:-1 tvg-id="htvthethaohd" group-title="HTV",HTV Thể Thao
+#EXTINF:-1 tvg-id="htvthethaohd" group-title="HTV",HTV Thể Thao HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://live.fptplay53.net/epzhd1/htvcthethao_vhls.smil/chunklist_b5000000.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV+Th%E1%BB%83+Thao+HD
 
 #EXTINF:-1 tvg-id="htvcthuanviet" group-title="HTV",HTVC Thuần Việt
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Thu%E1%BA%A7n+Vi%E1%BB%87t
 
-#EXTINF:-1 tvg-id="htvcplushd" group-title="HTV",HTVC Plus
+#EXTINF:-1 tvg-id="htvcplushd" group-title="HTV",HTVC Plus HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://live.fptplay53.net/epzhd1/htvcplus_vhls.smil/chunklist_b5000000.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Plus+HD
 
-#EXTINF:-1 tvg-id="htvcdulichhd" group-title="HTV",HTVC Du Lịch
+#EXTINF:-1 tvg-id="htvcdulichhd" group-title="HTV",HTVC Du Lịch HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://live.fptplay53.net/epzhd1/htvcdulich_vhls.smil/chunklist_b5000000.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Du+L%E1%BB%8Bch+HD
 
-#EXTINF:-1 tvg-id="htvccanhachd" group-title="HTV",HTVC Ca Nhạc
+#EXTINF:-1 tvg-id="htvccanhachd" group-title="HTV",HTVC Ca Nhạc HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://live.fptplay53.net/epzhd1/htvcmusic_vhls.smil/chunklist_b5000000.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Ca+Nh%E1%BA%A1c+HD
 
-#EXTINF:-1 tvg-id="htvcphimhd" group-title="HTV",HTVC Phim
+#EXTINF:-1 tvg-id="htvcphimhd" group-title="HTV",HTVC Phim HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://live.fptplay53.net/epzhd1/htvcmovieshd_vhls.smil/chunklist_b5000000.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Phim+HD
 
-#EXTINF:-1 tvg-id="htvcgiadinhhd" group-title="HTV",HTVC Gia Đình
+#EXTINF:-1 tvg-id="htvcgiadinhhd" group-title="HTV",HTVC Gia Đình HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://live.fptplay53.net/epzhd1/htvcgiadinh_vhls.smil/chunklist_b5000000.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Gia+%C4%90%C3%ACnh+HD
 
-#EXTINF:-1 tvg-id="htvcphunuhd" group-title="HTV",HTVC Phụ Nữ
+#EXTINF:-1 tvg-id="htvcphunuhd" group-title="HTV",HTVC Phụ Nữ HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://live.fptplay53.net/epzhd1/htvcphunu_vhls.smil/chunklist_b5000000.m3u8
-
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Ph%E1%BB%A5+N%E1%BB%AF+HD
 #EXTINF:-1 tvg-id="sctv1hd" group-title="SCTV",SCTV1
 https://vmttv.dpdns.org/VTVGo/?sctv1
 #EXTINF:-1 tvg-id="sctv2hd" group-title="SCTV",SCTV2 - TODAY TV
