@@ -14,12 +14,10 @@ SOURCE_URL = os.environ.get("UPSTREAM_PLAYLIST_URL", "")
 
 TARGET_FILE = "m3u.m3u"
 
-# Replace this after `wrangler deploy` if Cloudflare assigns a different URL.
 WORKER_BASE_URL = "https://vietmitv-stream.viet-ng228.workers.dev"
 
-# Chỉ hai nhóm này được thay thế toàn bộ từ nguồn. Mọi nhóm khác trong
-# m3u.m3u phải được giữ nguyên cả danh sách lẫn nội dung block.
 SYNC_GROUPS = ("VTVcab", "HTV")
+DIRECT_REFRESH_CHANNELS = (("SCTV", "SCTV4K"),)
 
 
 def fetch(url: str) -> str:
@@ -81,7 +79,6 @@ def normalize_text(text: str, preserve_plus: bool = False) -> str:
     text = text.replace("&", "and")
 
     if preserve_plus:
-        # Giữ ý nghĩa dấu cộng để ON SPORTS khác ON SPORTS+.
         text = text.replace("+", " plus ")
 
     text = re.sub(r"[^a-z0-9]+", " ", text)
@@ -93,7 +90,6 @@ def normalize_name(name: str) -> str:
 
 
 def normalize_group(group: str) -> str:
-    # Đồng nhất với Worker: "VTV CAB" và "VTVcab" là cùng một group.
     return normalize_text(group).replace(" ", "")
 
 
@@ -164,7 +160,6 @@ def merge_block(target_block, source_block):
     name = get_channel_name(source_block)
     query = urlencode({"group": group, "name": name})
     stream_url = f"{WORKER_BASE_URL}/channel?{query}"
-    license_url = f"{stream_url}&kind=license"
 
     body = []
     for line in source_block[1:]:
@@ -173,9 +168,7 @@ def merge_block(target_block, source_block):
             line,
             flags=re.IGNORECASE,
         ):
-            body.append(
-                re.sub(r"=https?://[^|\s]+", f"={license_url}", line, count=1)
-            )
+            body.append(line)
         elif re.match(r"^https?://", line, flags=re.IGNORECASE):
             body.append(stream_url)
         else:
@@ -227,6 +220,10 @@ def sanitize_target_file(target_file: str) -> None:
 def update_existing_channels(target_blocks, source_map):
     """Không thêm/xóa kênh; lấy logo và chỉ đổi stream của VTVcab/HTV."""
     selected = {normalize_group(group) for group in SYNC_GROUPS}
+    direct_refresh = {
+        (normalize_group(group), normalize_name(name))
+        for group, name in DIRECT_REFRESH_CHANNELS
+    }
     output = []
 
     for target_block in target_blocks:
@@ -244,6 +241,8 @@ def update_existing_channels(target_blocks, source_map):
         metadata_target = [extinf, *target_block[1:]]
         if normalize_group(group) in selected:
             output.append(merge_block(metadata_target, source_block))
+        elif key in direct_refresh:
+            output.append([extinf, *source_block[1:]])
         else:
             output.append(metadata_target)
 
