@@ -10,6 +10,7 @@ from PIL import Image, ImageDraw
 
 PLAYLIST = Path("m3u.m3u")
 PRIMARY_LOGO_SOURCE = "https://4note.net/raw/sxmpewlsn8"
+PRIMARY_LOGO_FILE = Path("logos/logo-source.m3u")
 OUTPUT_DIR = Path("logos")
 SIZE = (410, 230)
 MAX_LOGO = (230, 105)
@@ -103,9 +104,15 @@ def main():
     text = PLAYLIST.read_text(encoding="utf-8")
     session = requests.Session()
     session.headers["User-Agent"] = "Mozilla/5.0"
-    primary_response = session.get(PRIMARY_LOGO_SOURCE, timeout=30)
-    primary_response.raise_for_status()
-    primary_by_id, primary_by_name = primary_logo_maps(primary_response.text)
+    if PRIMARY_LOGO_FILE.exists():
+        primary_text = PRIMARY_LOGO_FILE.read_text(encoding="utf-8")
+        print(f"Primary logo list: {PRIMARY_LOGO_FILE}")
+    else:
+        primary_response = session.get(PRIMARY_LOGO_SOURCE, timeout=30)
+        primary_response.raise_for_status()
+        primary_text = primary_response.text
+        print(f"Primary logo list: {PRIMARY_LOGO_SOURCE}")
+    primary_by_id, primary_by_name = primary_logo_maps(primary_text)
 
     copied = generated = failed = missing = 0
     seen = set()
