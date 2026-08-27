@@ -17,6 +17,10 @@ TARGET_FILE = "m3u.m3u"
 # Replace this after `wrangler deploy` if Cloudflare assigns a different URL.
 WORKER_BASE_URL = "https://vietmitv-stream.viet-ng228.workers.dev"
 
+# Chỉ hai nhóm này được thay thế toàn bộ từ nguồn. Mọi nhóm khác trong
+# m3u.m3u phải được giữ nguyên cả danh sách lẫn nội dung block.
+SYNC_GROUPS = ("VTVcab", "HTV")
+
 
 def fetch(url: str) -> str:
     response = requests.get(
@@ -89,7 +93,8 @@ def normalize_name(name: str) -> str:
 
 
 def normalize_group(group: str) -> str:
-    return normalize_text(group)
+    # Đồng nhất với Worker: "VTV CAB" và "VTVcab" là cùng một group.
+    return normalize_text(group).replace(" ", "")
 
 
 def is_radio_block(block) -> bool:
@@ -210,7 +215,46 @@ def sanitize_target_file(target_file: str) -> None:
     path.write_text("\n".join(output) + "\n", encoding="utf-8", newline="\n")
 
 
-def update_target_file(target_file: str, source_map: dict):
+def dynamic_source_block(source_block):
+    """Giữ metadata gọn, chuyển stream/license của một block nguồn qua Worker."""
+    extinf = sanitize_extinf(source_block[0])
+    return merge_block([extinf], source_block)
+
+
+def replace_selected_groups(target_blocks, source_groups):
+    """Thay toàn bộ VTVcab/HTV; giữ nguyên từng block của mọi group khác."""
+    selected = {normalize_group(group) for group in SYNC_GROUPS}
+    inserted = set()
+    output = []
+
+    for block in target_blocks:
+        group_key = normalize_group(get_group_title(block))
+        if group_key not in selected:
+            output.append(block)
+            continue
+
+        if group_key in inserted:
+            continue
+
+        output.extend(
+            dynamic_source_block(source_block)
+            for source_block in source_groups.get(group_key, [])
+        )
+        inserted.add(group_key)
+
+    # Phòng trường hợp playlist đích thiếu hẳn một trong hai group.
+    for group in SYNC_GROUPS:
+        group_key = normalize_group(group)
+        if group_key not in inserted:
+            output.extend(
+                dynamic_source_block(source_block)
+                for source_block in source_groups.get(group_key, [])
+            )
+
+    return output
+
+
+def update_target_file(target_file: str, source_groups: dict):
     print()
     print("=" * 72)
     print(f" ĐANG XỬ LÝ: {target_file}")
@@ -235,10 +279,6 @@ def update_target_file(target_file: str, source_map: dict):
     )
     header_lines = target_lines[:first_block]
     target_blocks = split_blocks("\n".join(target_lines[first_block:]))
-    for block in target_blocks:
-        if block:
-            block[0] = sanitize_extinf(block[0])
-
     target_groups = {}
     for block in target_blocks:
         group = get_group_title(block)
@@ -253,37 +293,28 @@ def update_target_file(target_file: str, source_map: dict):
         for group in target_groups.values():
             print(f"  - {group}")
 
-    updated_blocks = []
-    updated_count = same_count = not_found_count = 0
+    selected_keys = {normalize_group(group) for group in SYNC_GROUPS}
+    before_counts = {
+        key: sum(
+            normalize_group(get_group_title(block)) == key
+            for block in target_blocks
+        )
+        for key in selected_keys
+    }
+    updated_blocks = replace_selected_groups(target_blocks, source_groups)
+    after_counts = {
+        key: len(source_groups.get(key, []))
+        for key in selected_keys
+    }
+    updated_count = sum(after_counts.values())
+    same_count = not_found_count = 0
 
-    for target_block in target_blocks:
-        target_name = get_channel_name(target_block)
-        target_group = get_group_title(target_block)
-
-        if not target_name:
-            updated_blocks.append(target_block)
-            continue
-
-        key = (normalize_group(target_group), normalize_name(target_name))
-        source = source_map.get(key)
-        label = f"[{target_group}] {target_name}" if target_group else target_name
-
-        if not source:
-            print(f"[KHÔNG TÌM THẤY] {label}")
-            updated_blocks.append(target_block)
-            not_found_count += 1
-            continue
-
-        new_block = merge_block(target_block, source["block"])
-        if new_block == target_block:
-            print(f"[GIỮ NGUYÊN]     {label}")
-            updated_blocks.append(target_block)
-            same_count += 1
-        else:
-            print(f"[UPDATE]          {label}")
-            print("  Đồng bộ metadata + link từ upstream")
-            updated_blocks.append(new_block)
-            updated_count += 1
+    for group in SYNC_GROUPS:
+        key = normalize_group(group)
+        print(
+            f"[THAY TOÀN BỘ] {group}: "
+            f"{before_counts.get(key, 0)} -> {after_counts.get(key, 0)} kênh"
+        )
 
     output_lines = list(header_lines)
     for block in updated_blocks:
@@ -351,8 +382,26 @@ def main():
         print("Không thay đổi file nào.")
         sys.exit(1)
 
+    selected_keys = {normalize_group(group) for group in SYNC_GROUPS}
+    source_groups = {key: [] for key in selected_keys}
+    for block in source_blocks:
+        if is_radio_block(block):
+            continue
+        group_key = normalize_group(get_group_title(block))
+        if group_key in source_groups:
+            source_groups[group_key].append(block)
+
+    missing_groups = [
+        group for group in SYNC_GROUPS
+        if not source_groups[normalize_group(group)]
+    ]
+    if missing_groups:
+        print(f"[LỖI] Nguồn thiếu toàn bộ group: {', '.join(missing_groups)}")
+        print("Không thay đổi playlist để tránh xóa nhầm group hiện tại.")
+        sys.exit(1)
+
     # Xử lý trực tiếp 1 file đích
-    result = update_target_file(TARGET_FILE, source_map)
+    result = update_target_file(TARGET_FILE, source_groups)
 
     print("\n" + "=" * 72)
     print("                           TỔNG KẾT")
