@@ -1,40 +1,54 @@
-#EXTM3U url-tvg="https://epg.io.vn/epgu.xml"
-#EXTINF:-1 group-title="VTV",VTV1
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (SMART-TV; LINUX; Tizen 10.0) AppleWebKit/537.36 (KHTML, like Gecko) 130.0.6723.116/10.0 TV Safari/537.36
-https://vips-livecdn.fptplay.net/live/media/vtv1/live247-hls-avc/index.m3u8
-#EXTINF:-1 group-title="VTV",VTV2
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (SMART-TV; LINUX; Tizen 10.0) AppleWebKit/537.36 (KHTML, like Gecko) 130.0.6723.116/10.0 TV Safari/537.36
-https://vips-livecdn.fptplay.net/live/media/vtv2/live247-hls-avc/index.m3u8
-#EXTINF:-1 group-title="VTV",VTV3
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (SMART-TV; LINUX; Tizen 10.0) AppleWebKit/537.36 (KHTML, like Gecko) 130.0.6723.116/10.0 TV Safari/537.36
-https://vips-livecdn.fptplay.net/live/media/vtv3/live247-hls-avc/index.m3u8
-#EXTINF:-1 group-title="VTV",VTV4
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (SMART-TV; LINUX; Tizen 10.0) AppleWebKit/537.36 (KHTML, like Gecko) 130.0.6723.116/10.0 TV Safari/537.36
-https://live.fptplay53.net/fnxhd1/vtv4hd_vhls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="VTV",VTV5
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (SMART-TV; LINUX; Tizen 10.0) AppleWebKit/537.36 (KHTML, like Gecko) 130.0.6723.116/10.0 TV Safari/537.36
-https://live.fptplay53.net/fnxhd1/vtv5hd_vhls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="VTV",VTV6
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (SMART-TV; LINUX; Tizen 10.0) AppleWebKit/537.36 (KHTML, like Gecko) 130.0.6723.116/10.0 TV Safari/537.36
-https://vips-livecdn.fptplay.net/live/media/vtv6/live247-hls-avc/index.m3u8
-#EXTINF:-1 group-title="VTV",VTV7
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (SMART-TV; LINUX; Tizen 10.0) AppleWebKit/537.36 (KHTML, like Gecko) 130.0.6723.116/10.0 TV Safari/537.36
-https://vips-livecdn.fptplay.net/live/media/vtv7/live247-hls-avc/index.m3u8
-#EXTINF:-1 group-title="VTV",VTV8
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (SMART-TV; LINUX; Tizen 10.0) AppleWebKit/537.36 (KHTML, like Gecko) 130.0.6723.116/10.0 TV Safari/537.36
-https://live.fptplay53.net/fnxhd1/vtv8hd_vhls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="VTV",VTV9
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (SMART-TV; LINUX; Tizen 10.0) AppleWebKit/537.36 (KHTML, like Gecko) 130.0.6723.116/10.0 TV Safari/537.36
-https://vips-livecdn.fptplay.net/live/media/vtv9/live247-hls-avc/index.m3u8
-#EXTINF:-1 group-title="VTV",VTV10
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (SMART-TV; LINUX; Tizen 10.0) AppleWebKit/537.36 (KHTML, like Gecko) 130.0.6723.116/10.0 TV Safari/537.36
-https://vips-livecdn.fptplay.net/live/media/vtv10/live247-hls-avc/index.m3u8
-#EXTINF:-1 group-title="VTV",VTV5 - Tây Nam Bộ
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (SMART-TV; LINUX; Tizen 10.0) AppleWebKit/537.36 (KHTML, like Gecko) 130.0.6723.116/10.0 TV Safari/537.36
-https://live.fptplay53.net/fnxhd1/vtv5tnb_vhls.smil/chunklist.m3u8
-#EXTINF:-1 group-title="VTV",VTV5 - Tây Nguyên
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (SMART-TV; LINUX; Tizen 10.0) AppleWebKit/537.36 (KHTML, like Gecko) 130.0.6723.116/10.0 TV Safari/537.36
-https://vips-livecdn.fptplay.net/live/media/vtv5tn/live-hls-avc/index.m3u8
+#EXTINF:-1 tvg-id="vtv1hd" group-title="VTV" tvg-logo="http://vietanh18h1.duckdns.org/ic/vtv1.png" , VTV1 
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://live.fptplay53.net/live/media/vtv1/live247-hls-avc/vtv1-avc1_5600000=10000-mp4a_131600=20000.m3u8
+
+#EXTINF:-1 tvg-id="vtv2hd" group-title="VTV" tvg-logo="http://vietanh18h1.duckdns.org/ic/vtv2.png" , VTV2 
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://vips-livecdn.fptplay.net/live/media/vtv2/live247-hls-avc/vtv2-avc1_5600000=10000-mp4a_131600=20000.m3u8
+
+#EXTINF:-1 tvg-id="vtv3hd" group-title="VTV" tvg-logo="http://vietanh18h1.duckdns.org/ic/vtv3.png" , VTV3 
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://vips-livecdn.fptplay.net/live/media/vtv3/live247-hls-avc/vtv3-avc1_5600000=10000-mp4a_140800_vie=20000.m3u8
+
+#EXTINF:-1 tvg-id="vtv4hd" group-title="VTV" tvg-logo="http://vietanh18h1.duckdns.org/ic/vtv4.png" , VTV4 
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://live.fptplay53.net/live/media/vtv4/live247-hls-avc/vtv4-avc1_5600000=10000-mp4a_131600=20000.m3u8
+
+#EXTINF:-1 tvg-id="vtv5hd" group-title="VTV" tvg-logo="http://vietanh18h1.duckdns.org/ic/vtv5.png" , VTV5 
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://live.fptplay53.net/live/media/vtv5/live247-hls-avc/vtv5-avc1_5600000=10000-mp4a_131600=20000.m3u8
+
+#EXTINF:-1 tvg-id="vtv6hd" group-title="VTV" tvg-logo="https://image1.vnmedia.xyz/logo/vtv6hd.png" , VTV6 
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://vips-livecdn.fptplay.net/live/media/vtv6/live247-hls-avc/vtv6-avc1_5600000=10000-mp4a_140800_vie=20000.m3u8
+
+#EXTINF:-1 tvg-id="vtv7hd" group-title="VTV" tvg-logo="http://vietanh18h1.duckdns.org/ic/vtv7.png" , VTV7 
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://vips-livecdn.fptplay.net/live/media/vtv7/live247-hls-avc/vtv7-avc1_5600000=10000-mp4a_140800_vie=20000.m3u8
+
+#EXTINF:-1 tvg-id="vtv8hd" group-title="VTV" tvg-logo="http://vietanh18h1.duckdns.org/ic/vtv8.png" , VTV8 
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://vips-livecdn.fptplay.net/live/media/vtv8/live-hls-avc/vtv8-avc1_4000000=10000-mp4a_131600=20000.m3u8
+
+#EXTINF:-1 tvg-id="vtv9hd" group-title="VTV" tvg-logo="http://vietanh18h1.duckdns.org/ic/vtv9.png" , VTV9 
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://vips-livecdn.fptplay.net/live/media/vtv9/live247-hls-avc/vtv9-avc1_5600000=10000-mp4a_140800_vie=20000.m3u8
+
+#EXTINF:-1 tvg-id="vtv10" group-title="VTV" tvg-logo="http://vietanh18h1.duckdns.org/ic/vtv10.png" , VTV10 
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://vips-livecdn.fptplay.net/live/media/vtv10/live247-hls-avc/vtv10-avc1_5600000=10000-mp4a_131600=20000.m3u8
+
+#EXTINF:-1 tvg-id="vtv5hdtnb" group-title="VTV" tvg-logo="http://vietanh18h1.duckdns.org/ic/vtv5tnb.png", VTV5  - Tây Nam Bộ 
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://live.fptplay53.net/live/media/vtv5tnb/live-hls-avc/vtv5tnb-avc1_4000000=10000-mp4a_131600=20000.m3u8
+
+#EXTINF:-1 tvg-id="vtv5hdtn" group-title="VTV" tvg-logo="http://vietanh18h1.duckdns.org/ic/vtv5tn.png", VTV5  - Tây Nguyên 
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://live.fptplay53.net/live/media/vtv5tn/live-hls-avc/vtv5tn-avc1_4000000=10000-mp4a_131600=20000.m3u8
+
+#EXTINF:-1 tvg-id="vietnamtoday" group-title="VTV" tvg-logo="http://vietanh18h1.duckdns.org/ic/vietnamtoday.png",VietNam Today
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://live.fptplay53.net/fnxhd1/vntoday_vhls.smil/chunklist_b5000000.m3u8
 #EXTINF:-1 tvg-id="antv-hd" group-title="Địa Phương",ANTV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36
 https://live.fptplay53.net/fnxhd2/anninhtv_vhls.smil/chunklist_b5000000.m3u8
@@ -87,7 +101,7 @@ https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Du+L%
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Ca+Nh%E1%BA%A1c+HD
 
-#EXTINF:-1 tvg-id="htvcphimhd" group-title="HTV" tvg-logo="https://img-ali1.tv360.vn/image1/2021/07/01/15/1625129239161/48401c7a9ce3_480_270.png",HTVC Phim HD
+#EXTINF:-1 tvg-id="htvcphimhd" group-title="HTV" tvg-logo="https://img-ali1.tv360.vn/image1/2021/07/01/15/1625129239161/48401c7a9ce3_480_270.png",HTVC Phim 
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
 https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Phim+HD
 
