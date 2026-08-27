@@ -179,11 +179,26 @@ async function proxy(target: URL, request: Request): Promise<Response> {
   let upstream: Response;
   try {
     const headers = new Headers();
-    for (const name of ["accept", "range", "user-agent", "origin", "referer"]) {
+    for (const name of [
+      "accept",
+      "accept-language",
+      "authorization",
+      "content-type",
+      "range",
+      "user-agent",
+      "origin",
+      "referer",
+    ]) {
       const value = request.headers.get(name);
       if (value) headers.set(name, value);
     }
-    upstream = await fetch(target, { method: request.method, headers, redirect: "follow", signal: controller.signal });
+    upstream = await fetch(target, {
+      method: request.method,
+      headers,
+      body: request.method === "GET" || request.method === "HEAD" ? undefined : request.body,
+      redirect: "follow",
+      signal: controller.signal,
+    });
   } finally {
     clearTimeout(timeout);
   }
@@ -228,7 +243,13 @@ async function resolveChannel(request: Request, requestUrl: URL, env: SecretEnv)
   if (!rawTarget) return json({ ok: false, error: `${kind}_not_found`, group: block.group, name: block.name }, 404);
   const target = safeTarget(rawTarget, requestUrl);
 
-  if (requestUrl.searchParams.get("mode") === "proxy") return proxy(target, request);
+  // DRM clients send the license challenge as POST. Always proxy it so the
+  // method, request body and response body survive; redirecting a POST is not
+  // handled consistently by Android media players. Proxy cleartext targets as
+  // well so the app never has to leave HTTPS.
+  if (kind === "license" || target.protocol === "http:" || requestUrl.searchParams.get("mode") === "proxy") {
+    return proxy(target, request);
+  }
   return new Response(null, {
     status: 302,
     headers: {
@@ -268,7 +289,10 @@ export default {
   async fetch(request: Request, env: SecretEnv): Promise<Response> {
     const requestUrl = new URL(request.url);
     try {
-      if (request.method !== "GET" && request.method !== "HEAD") return json({ ok: false, error: "method_not_allowed" }, 405, { allow: "GET, HEAD" });
+      const isChannelPost = request.method === "POST" && requestUrl.pathname === "/channel" && requestUrl.searchParams.get("kind") === "license";
+      if (request.method !== "GET" && request.method !== "HEAD" && !isChannelPost) {
+        return json({ ok: false, error: "method_not_allowed" }, 405, { allow: "GET, HEAD, POST" });
+      }
       if (requestUrl.pathname === "/" || requestUrl.pathname === "/health") return health(requestUrl, env);
       if (requestUrl.pathname === "/debug") return debug(requestUrl, env);
       if (requestUrl.pathname === "/channel") return resolveChannel(request, requestUrl, env);
