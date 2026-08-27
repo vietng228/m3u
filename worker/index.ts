@@ -243,14 +243,13 @@ async function resolveChannel(request: Request, requestUrl: URL, env: SecretEnv)
   if (!rawTarget) return json({ ok: false, error: `${kind}_not_found`, group: block.group, name: block.name }, 404);
   const target = safeTarget(rawTarget, requestUrl);
 
-  // DRM clients send the license challenge as POST, so licenses must be
-  // proxied. Streams keep redirect semantics because HLS/DASH manifests can
-  // contain relative segment paths that would break when served at /channel.
-  if (kind === "license" || requestUrl.searchParams.get("mode") === "proxy") {
+  // A 307 keeps the DRM POST body while the app talks directly to the key
+  // server. This avoids license servers rejecting Cloudflare's origin/IP.
+  if (requestUrl.searchParams.get("mode") === "proxy") {
     return proxy(target, request);
   }
   return new Response(null, {
-    status: 302,
+    status: kind === "license" ? 307 : 302,
     headers: {
       location: target.toString(),
       "cache-control": "no-store",
