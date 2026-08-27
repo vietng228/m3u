@@ -43,157 +43,157 @@ https://live.fptplay53.net/fnxhd2/anninhtv_vhls.smil/chunklist_b5000000.m3u8
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36
 https://live.fptplay53.net/fnxhd2/quocphongvnhd_vhls.smil/chunklist_b5000000.m3u8
 
-#EXTINF:-1 tvg-id="onviegiaitri" group-title="VTVcab",ON Vie Giải Trí
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+Vie+Gi%E1%BA%A3i+Tr%C3%AD
+#EXTINF:-1 tvg-id="htv1" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htv1.png", HTV1
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
+https://live.fptplay53.net/epzhd1/htv1_hls.smil/chunklist_b2500000.m3u8
 
-#EXTINF:-1 tvg-id="onphimviet" group-title="VTVcab",ON Phim Việt
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+Phim+Vi%E1%BB%87t
+#EXTINF:-1 tvg-id="htv2hd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htv2.png", HTV2 HD
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
+https://live.fptplay53.net/epzhd1/htv2hd_vhls.smil/chunklist_b5000000.m3u8
 
-#EXTINF:-1 tvg-id="onmovies" group-title="VTVcab",On Movies
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=On+Movies
+#EXTINF:-1 tvg-id="htv3" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htv3.png", HTV3
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
+https://live.fptplay53.net/epzhd1/htv3_hls.smil/chunklist_b2500000.m3u8
 
-#EXTINF:-1 tvg-id="onechannel" group-title="VTVcab",ON E- Channel
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+E-+Channel
+#EXTINF:-1 tvg-id="htvkey" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvkey.png", HTV Key
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
+https://live.fptplay53.net/epzhd1/htv4_hls.smil/chunklist_b2500000.m3u8
 
-#EXTINF:-1 tvg-id="ono2tv" group-title="VTVcab",On O2TV
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=On+O2TV
+#EXTINF:-1 tvg-id="htv7hd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htv7.png", HTV7 HD
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
+https://live.fptplay53.net/epzhd1/htv7hd_vhls.smil/chunklist_b5000000.m3u8
 
-#EXTINF:-1 tvg-id="onbibi" group-title="VTVcab",On BiBi
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=On+BiBi
+#EXTINF:-1 tvg-id="htv9hd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htv9.png", HTV9 HD
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
+https://live.fptplay53.net/epzhd1/htv9hd_vhls.smil/chunklist_b5000000.m3u8
 
-#EXTINF:-1 tvg-id="oninfotv" group-title="VTVcab",ON Info TV
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+Info+TV
+#EXTINF:-1 tvg-id="htvthethaohd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvthethao.png", HTV Thể Thao HD
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
+https://live.fptplay53.net/epzhd1/htvcthethao_vhls.smil/chunklist_b5000000.m3u8
 
-#EXTINF:-1 tvg-id="oncine" group-title="VTVcab",ON Cine
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+Cine
+#EXTINF:-1 tvg-id="htvcthuanviet" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvcthuanviet.png", HTVC Thuần Việt 
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
+https://live.fptplay53.net/epzhd1/htvcthuanviethd_vhls.smil/chunklist_b5000000.m3u8
 
-#EXTINF:-1 tvg-id="onstyle" group-title="VTVcab",ON Style TV
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+Style+TV
+#EXTINF:-1 tvg-id="htvcplushd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvcplus.png", HTVC Plus HD
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
+https://live.fptplay53.net/epzhd1/htvcplus_vhls.smil/chunklist_b5000000.m3u8
 
-#EXTINF:-1 tvg-id="onmusic" group-title="VTVcab",On Music
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=On+Music
+#EXTINF:-1 tvg-id="htvcdulichhd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvcdulichcuocsong.png", HTVC Du Lịch HD
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
+https://live.fptplay53.net/epzhd1/htvcdulich_vhls.smil/chunklist_b5000000.m3u8
 
-#EXTINF:-1 tvg-id="ontrending" group-title="VTVcab",ON TRENDING TV
+#EXTINF:-1 tvg-id="htvccanhachd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvccanhac.png", HTVC Ca Nhạc HD
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
+https://live.fptplay53.net/epzhd1/htvcmusic_vhls.smil/chunklist_b5000000.m3u8
+
+#EXTINF:-1 tvg-id="htvcphimhd" group-title="HTV" tvg-logo="https://img-ali1.tv360.vn/image1/2021/07/01/15/1625129239161/48401c7a9ce3_480_270.png", HTVC Phim HD
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
+https://live.fptplay53.net/epzhd1/htvcmovieshd_vhls.smil/chunklist_b5000000.m3u8
+
+#EXTINF:-1 tvg-id="htvcgiadinhhd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvcgiadinh.png", HTVC Gia Đình HD
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
+https://live.fptplay53.net/epzhd1/htvcgiadinh_vhls.smil/chunklist_b5000000.m3u8
+
+#EXTINF:-1 tvg-id="htvcphunuhd" group-title="HTV" tvg-logo="https://vietanhtv.id.vn/logo/htvcphunu.png", HTVC Phụ Nữ HD
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
+https://live.fptplay53.net/epzhd1/htvcphunu_vhls.smil/chunklist_b5000000.m3u8
+#EXTINF:-1 tvg-id="onviegiaitri" group-title="VTVcab" tvg-logo="https://vietanhtv.id.vn/logo/viegiaitri.png", ON Vie Giải Trí
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://tv.vietanhtv.top/vieon/vieon.php?id=vie-giai-tri-hd
+
+#EXTINF:-1 tvg-id="onphimviet" group-title="VTVcab" tvg-logo="https://vietanhtv.id.vn/logo/onphimviet.png", ON Phim Việt
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://tv.vietanhtv.top/tv360/tv360.php?id=175&expires=1787943399&token=2b410ce57bf8e7333db20902e42ecffc
+
+#EXTINF:-1 tvg-id="onmovies" group-title="VTVcab" tvg-logo="https://vietanhtv.id.vn/logo/onmovies.png", On Movies 
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://tv.vietanhtv.top/tv360/tv360.php?id=181&expires=1787943399&token=3d24aa926e5d89a0c9cf40c21a7effdd
+
+#EXTINF:-1 tvg-id="onechannel" group-title="VTVcab" tvg-logo="https://vietanhtv.id.vn/logo/onechannel.png", ON E- Channel
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://tv.vietanhtv.top/tv360/tv360.php?id=182&expires=1787943399&token=dd288fa9c4cf403c02a77d47c89a23da
+
+#EXTINF:-1 tvg-id="ono2tv" group-title="VTVcab" tvg-logo="https://vietanhtv.id.vn/logo/ono2tv.png", On O2TV
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://tv.vietanhtv.top/tv360/tv360.php?id=136&expires=1787943399&token=e95c33eac677f5131e8039cdc0d66858
+
+#EXTINF:-1 tvg-id="onbibi" group-title="VTVcab" tvg-logo="https://vietanhtv.id.vn/logo/onbibi.png", On BiBi
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://tv.vietanhtv.top/tv360/tv360.php?id=178&expires=1787943399&token=93a02717c4d6cbf8493d428c4857e193
+
+#EXTINF:-1 tvg-id="oninfotv" group-title="VTVcab" tvg-logo="https://img-ali1.tv360.vn/image1/2023/07/19/09/1689732099410/a13853e5de55_480_270.png", ON Info TV
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://tv.vietanhtv.top/tv360/tv360.php?id=189&expires=1787943399&token=e2c83d220baef666910644ab4d2ca795
+
+#EXTINF:-1 tvg-id="oncine" group-title="VTVcab" tvg-logo="https://vietanhtv.id.vn/logo/oncine.png", ON Cine
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://tv.vietanhtv.top/tv360/tv360.php?id=176&expires=1787943399&token=d1f29a8d3819531d0ed306ead242513e
+
+#EXTINF:-1 tvg-id="onstyle" group-title="VTVcab" tvg-logo="https://vietanhtv.id.vn/logo/onstyle.png", ON Style TV
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://tv.vietanhtv.top/tv360/tv360.php?id=184&expires=1787943399&token=f595fe898b61d54274a1c37c6369c396
+
+#EXTINF:-1 tvg-id="onmusic" group-title="VTVcab" tvg-logo="https://vietanhtv.id.vn/logo/onmusic.png", On Music
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://tv.vietanhtv.top/tv360/tv360.php?id=185&expires=1787943399&token=4bcfcb85a1ef21e64e29fb4a92a13b02
+
+#EXTINF:-1 tvg-id="ontrending" group-title="VTVcab" tvg-logo="https://vietanhtv.id.vn/logo/ontrendingtv.png", ON TRENDING TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+TRENDING+TV
+https://tv.vietanhtv.top/tv360/tv360.php?id=186&expires=1787943399&token=397b31bafbea299e891b0c77adc9632b
 
-#EXTINF:-1 tvg-id="onviedramas" group-title="VTVcab",ON Vie Dramas
+#EXTINF:-1 tvg-id="onviedramas" group-title="VTVcab" tvg-logo="https://vietanhtv.id.vn/logo/viedrama.png", ON Vie Dramas
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+Vie+Dramas
+https://tv.vietanhtv.top/vieon/vieon.php?id=vie-dramas-hd
 
-#EXTINF:-1 tvg-id="onvfamily" group-title="VTVcab",ON V Family
+#EXTINF:-1 tvg-id="onvfamily" type="stream" group-title="VTVcab" tvg-logo="https://i.ibb.co/HHfL7Dq/cocab20.webp", ON V Family
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+V+Family
+https://tv.vietanhtv.top/tv360/tv360.php?id=187&expires=1787943399&token=deddd163441fba8967a1731b8a57256c
 
-#EXTINF:-1 tvg-id="onkids" group-title="VTVcab",On Kids
+#EXTINF:-1 tvg-id="onkids" group-title="VTVcab" tvg-logo="https://vietanhtv.id.vn/logo/onkids.png", On Kids
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=On+Kids
+https://tv.vietanhtv.top/tv360/tv360.php?id=179&expires=1787943399&token=eba0b499c8142ec753eca290453ad518
 
-#EXTINF:-1 tvg-id="onlife" group-title="VTVcab",On Life
+#EXTINF:-1 tvg-id="onlife" group-title="VTVcab" tvg-logo="https://img-ali1.tv360.vn/image1/2023/07/19/09/1689732652862/f124f55c3587_640_360.png", On Life
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=On+Life
+https://tv.vietanhtv.top/tv360/tv360.php?id=188&expires=1787943399&token=e9c716221a9457d8c64ff63a93a568c6
 
-#EXTINF:-1 tvg-id="onsports" group-title="VTVcab",ON SPORTS
+#EXTINF:-1 tvg-id="onsports" group-title="VTVcab" tvg-logo="https://assets-vtvcab.gviet.vn/images/hq/posters/_ports_ng_logo_04202212.jpg", ON SPORTS 
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream=inputstream.adaptive 
 #KODIPROP:inputstream.adaptive.manifest_type=dash 
 #KODIPROP:inputstream.adaptive.license_type=clearkey 
-#KODIPROP:inputstream.adaptive.license_key=https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+SPORTS&kind=license
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+SPORTS
+#KODIPROP:inputstream.adaptive.license_key=https://tv.vietanhtv.top/sex/cleankey.php?id=tv360173&token=d00b4d399053f8f87db392112e54e9ad
+https://tv.vietanhtv.top/tv360/tv360.php?id=173&expires=1787943399&token=bb62e96afece9d348b47ac5bd072763f
 
-#EXTINF:-1 tvg-id="onsportsplus" group-title="VTVcab",ON SPORTS+
+#EXTINF:-1 tvg-id="onsportsplus" group-title="VTVcab" tvg-logo="https://assets-vtvcab.gviet.vn/images/hq/posters/onsportscongmoi1.jpg", ON SPORTS+ 
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream=inputstream.adaptive
 #KODIPROP:inputstream.adaptive.manifest_type=dash 
 #KODIPROP:inputstream.adaptive.license_type=clearkey 
-#KODIPROP:inputstream.adaptive.license_key=https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+SPORTS%2B&kind=license
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+SPORTS%2B
+#KODIPROP:inputstream.adaptive.license_key=https://tv.vietanhtv.top/sex/cleankey.php?id=tv360183&token=d00b4d399053f8f87db392112e54e9ad
+https://tv.vietanhtv.top/tv360/tv360.php?id=183&expires=1787943399&token=e95e59fc400089ad0df0e847e57d19c8
 
-#EXTINF:-1 tvg-id="onfootball" group-title="VTVcab",ON FOOTBALL
+#EXTINF:-1 tvg-id="onfootball" group-title="VTVcab" tvg-logo="https://assets-vtvcab.gviet.vn/images/hq/posters/_ootball_-_opyright_by_cab_logo_202212.jpg", ON FOOTBALL
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream=inputstream.adaptive 
 #KODIPROP:inputstream.adaptive.manifest_type=dash 
 #KODIPROP:inputstream.adaptive.license_type=clearkey 
-#KODIPROP:inputstream.adaptive.license_key=https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+FOOTBALL&kind=license
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+FOOTBALL
+#KODIPROP:inputstream.adaptive.license_key=https://tv.vietanhtv.top/sex/cleankey.php?id=tv360174&token=d00b4d399053f8f87db392112e54e9ad
+https://tv.vietanhtv.top/tv360/tv360.php?id=174&expires=1787943399&token=5a9003df5e17e896f9d5815f6ff0e9f7
 
-#EXTINF:-1 tvg-id="onsportsnews" group-title="VTVcab",ON SPORTS NEWS
+#EXTINF:-1 tvg-id="onsportsnews" group-title="VTVcab" tvg-logo="https://assets-vtvcab.gviet.vn/images/v2/channel/20220613/2022061306/Logo_ONSPORTSNEWS_150x904_1675158858.webp", ON SPORTS NEWS 
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream=inputstream.adaptive 
 #KODIPROP:inputstream.adaptive.manifest_type=dash 
 #KODIPROP:inputstream.adaptive.license_type=clearkey 
-#KODIPROP:inputstream.adaptive.license_key=https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+SPORTS+NEWS&kind=license
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+SPORTS+NEWS
+#KODIPROP:inputstream.adaptive.license_key=https://tv.vietanhtv.top/sex/cleankey.php?id=tv360170&token=d00b4d399053f8f87db392112e54e9ad
+https://tv.vietanhtv.top/tv360/tv360.php?id=170&expires=1787943399&token=025f801bb927faab868918ee6ea97d69
 
-#EXTINF:-1 tvg-id="ongolf" group-title="VTVcab",ON GOLF
+#EXTINF:-1 tvg-id="ongolf" group-title="VTVcab" tvg-logo="https://assets-vtvcab.gviet.vn/images/v2/channel/20220613/2022061306/Logo_ONGOLF_150x903_1675158871.webp", ON GOLF 
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+GOLF
+https://tv.vietanhtv.top/tv360/tv360.php?id=169&expires=1787943399&token=3719b2b37f91f8ca7471ff9c829689f9
 
-#EXTINF:-1 tvg-id="htv1" group-title="HTV",HTV1
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV1
-
-#EXTINF:-1 tvg-id="htv2hd" group-title="HTV",HTV2 HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV2+HD
-
-#EXTINF:-1 tvg-id="htv3" group-title="HTV",HTV3
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV3
-
-#EXTINF:-1 tvg-id="htvkey" group-title="HTV",HTV Key
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV+Key
-
-#EXTINF:-1 tvg-id="htv7hd" group-title="HTV",HTV7 HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV7+HD
-
-#EXTINF:-1 tvg-id="htv9hd" group-title="HTV",HTV9 HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV9+HD
-
-#EXTINF:-1 tvg-id="htvthethaohd" group-title="HTV",HTV Thể Thao HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV+Th%E1%BB%83+Thao+HD
-
-#EXTINF:-1 tvg-id="htvcthuanviet" group-title="HTV",HTVC Thuần Việt
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Thu%E1%BA%A7n+Vi%E1%BB%87t
-
-#EXTINF:-1 tvg-id="htvcplushd" group-title="HTV",HTVC Plus HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Plus+HD
-
-#EXTINF:-1 tvg-id="htvcdulichhd" group-title="HTV",HTVC Du Lịch HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Du+L%E1%BB%8Bch+HD
-
-#EXTINF:-1 tvg-id="htvccanhachd" group-title="HTV",HTVC Ca Nhạc HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Ca+Nh%E1%BA%A1c+HD
-
-#EXTINF:-1 tvg-id="htvcphimhd" group-title="HTV",HTVC Phim HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Phim+HD
-
-#EXTINF:-1 tvg-id="htvcgiadinhhd" group-title="HTV",HTVC Gia Đình HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Gia+%C4%90%C3%ACnh+HD
-
-#EXTINF:-1 tvg-id="htvcphunuhd" group-title="HTV",HTVC Phụ Nữ HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Ph%E1%BB%A5+N%E1%BB%AF+HD
 #EXTINF:-1 tvg-id="sctv1hd" group-title="SCTV",SCTV1
 https://vmttv.dpdns.org/VTVGo/?sctv1
 #EXTINF:-1 tvg-id="sctv2hd" group-title="SCTV",SCTV2 - TODAY TV
