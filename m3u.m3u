@@ -141,7 +141,7 @@ https://vietmitv-stream.viet-ng228.workers.dev/channel?group=VTVcab&name=ON+GOLF
 
 #EXTINF:-1 tvg-id="htv1" group-title="HTV",HTV1
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://live.fptplay53.net/epzhd1/htv1_hls.smil/chunklist_b2500000.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV1
 
 #EXTINF:-1 tvg-id="htv2hd" group-title="HTV",HTV2
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
@@ -149,11 +149,11 @@ https://live.fptplay53.net/epzhd1/htv2hd_vhls.smil/chunklist_b5000000.m3u8
 
 #EXTINF:-1 tvg-id="htv3" group-title="HTV",HTV3
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://live.fptplay53.net/epzhd1/htv3_hls.smil/chunklist_b2500000.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV3
 
 #EXTINF:-1 tvg-id="htvkey" group-title="HTV",HTV Key
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://live.fptplay53.net/epzhd1/htv4_hls.smil/chunklist_b2500000.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTV+Key
 
 #EXTINF:-1 tvg-id="htv7hd" group-title="HTV",HTV7
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
@@ -169,7 +169,7 @@ https://live.fptplay53.net/epzhd1/htvcthethao_vhls.smil/chunklist_b5000000.m3u8
 
 #EXTINF:-1 tvg-id="htvcthuanviet" group-title="HTV",HTVC Thuần Việt
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
-https://live.fptplay53.net/epzhd1/htvcthuanviethd_vhls.smil/chunklist_b5000000.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=HTV&name=HTVC+Thu%E1%BA%A7n+Vi%E1%BB%87t
 
 #EXTINF:-1 tvg-id="htvcplushd" group-title="HTV",HTVC Plus
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0
@@ -218,7 +218,7 @@ https://vmttv.dpdns.org/VTVGo/?sctv8
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=https://vietmitv-stream.viet-ng228.workers.dev/channel?group=SCTV&name=SCTV9&kind=license
-https://livevlisctcdnw.seenow.vn/mean/SCTV9/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=SCTV&name=SCTV9
 
 #EXTINF:-1 group-title="SCTV",SCTV10
 https://vmttv.dpdns.org/VTVGo/?sctv10
@@ -263,7 +263,7 @@ https://liveatmvng.vtvprime.vn/live/data8/SCTV22/Live_DASHDRM/SCTV22.mpd
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=https://vietmitv-stream.viet-ng228.workers.dev/channel?group=SCTV&name=SCTV+Phim+T%E1%BB%95ng+H%E1%BB%A3p&kind=license
-https://liveatmvng.vtvprime.vn/live/data8/SCTVPHIM/Live_DASHDRM/SCTVPHIM.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=SCTV&name=SCTV+Phim+T%E1%BB%95ng+H%E1%BB%A3p
 
 #EXTINF:-1 tvg-id="sctv4k" group-title="SCTV",SCTV4K
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64)
@@ -482,102 +482,102 @@ https://vietmitv-stream.viet-ng228.workers.dev/channel?group=%C4%90%E1%BB%8Ba+Ph
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=a7c942778e874d43be92b8d0a0cd11b4:6d54358306571658ffdb952c6560688b
-https://livevlisctcdnw.seenow.vn/mean/BM1/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=In+The+Box&name=Box+Movie+1
 
 #EXTINF:-1 tvg-id="hollywoodclassics" group-title="In The Box",Hollywood Classics
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=a7c942778e874d43be92b8d0a0cd11b4:6d54358306571658ffdb952c6560688b
-https://livevlisctcdnw.seenow.vn/mean/HC/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=In+The+Box&name=Hollywood+Classics
 
 #EXTINF:-1 tvg-id="boxhits" group-title="In The Box",Box Hits
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=a7c942778e874d43be92b8d0a0cd11b4:6d54358306571658ffdb952c6560688b
-https://livevlisctcdnw.seenow.vn/mean/BOXHIT/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=In+The+Box&name=Box+Hits
 #EXTINF:-1 tvg-id="musicbox" group-title="In The Box",Music Box
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=2942ed303e0d40c9b99c94c587bbf509:96cda24109734fb7920d799d58d1a9ae
-https://livevlisctcdnw.seenow.vn/livesnv2/MUSICBOX/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=In+The+Box&name=Music+Box
 #EXTINF:-1 tvg-id="tvb-vietnam" group-title="Quốc Tế",TVB Việt Nam
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://amg01868-amg01868c3-tvbanywhere-us-4491.playouts.now.amagi.tv/playlist/amg01868-tvbusa-tvbvietnam-tvbanywhereus/playlist.m3u8?_xtfc=6864eb7721a75224098f21dba116e648&_xt=1772525259
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=TVB+Vi%E1%BB%87t+Nam
 #EXTINF:-1 tvg-id="warnertv" group-title="Quốc Tế",Warner TV
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=086d09a40bff3a00aa6dd4dbaf9c13b2:34f1908cfe2e05ee060046d40f14aec9
-https://s7771.cdn.mytvnet.vn/pkg20/live_dzones/wtv.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=Warner+TV
 #EXTINF:-1 tvg-id="hbo" group-title="Quốc Tế",HBO
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=09ddfe3d63863cafaeb79d0546b098ab:3de0f38dcf014827dfd5bec38743c6a2
-https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/hbo.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=HBO
 #EXTINF:-1 tvg-id="cinemaworld" group-title="Quốc Tế",CinemaWorld
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=ee7915564d7439d09bd3556ffccc87a4:b35e12a75a42a6f9184723a90ff42d9c
-https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/cinemaworld.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=CinemaWorld
 #EXTINF:-1 tvg-id="axn" group-title="Quốc Tế",AXN
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=9d29f87efdec3c9fab368f724a62ad0e:6f1c09c035eab36323d60d1454db3d20
-https://s7771.cdn.mytvnet.vn/pkg20/live_dzones/axn.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=AXN
 #EXTINF:-1 tvg-id="cinemax" group-title="Quốc Tế",Cinemax
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=acb4c23471063327adc732e283c0847f:e9868f5f473d0fd8699ede48d531c2b0
-https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/max.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=Cinemax
 #EXTINF:-1 tvg-id="cartoonnetwork" group-title="Quốc Tế",Cartoon Network
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=3c20166660a93a75ac77db81567389f7:3cc1add43aecce3fe31c9c6a2a5b8c21
-https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/cn.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=Cartoon+Network
 #EXTINF:-1 tvg-id="cartoonito" group-title="Quốc Tế",Cartoonito
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=b1f0d759e914369db388b3b0dc815971:5678d317e17007a88a9b9539e4526512
-https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/boomerang.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=Cartoonito
 #EXTINF:-1 tvg-id="bbc-cbeebies" group-title="Quốc Tế",BBC Cbeebies
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=cca73a006b4b39a595207ceb5ed9ca0a:b833d1f40c261ef78896f97e06f80cdc
-https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/cbb.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=BBC+Cbeebies
 #EXTINF:-1 tvg-id="dmax" group-title="Quốc Tế",Dmax
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=53b26f904ae03a20b56477cfb9c5dca2:0c64ccfb978e7390bd33344075492aec
-https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/dmax.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=Dmax
 #EXTINF:-1 tvg-id="dreamworks" group-title="Quốc Tế",Dreamworks
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=67dae20527c63dadaaae609aa91577cb:59328f621d56767bc5ff9404a8940683
-https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/dreamwork.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=Dreamworks
 #EXTINF:-1 tvg-id="davinci" group-title="Quốc Tế",Davinci
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://live.fptplay53.net/fnxhd2/davincihd_vhls.smil/chunklist.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=Davinci
 #EXTINF:-1 tvg-id="kix" group-title="Quốc Tế",Kix
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://live.fptplay53.net/fnxhd2/kixhd_vhls.smil/chunklist.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=Kix
 #EXTINF:-1 tvg-id="animal-planet" group-title="Quốc Tế",Animal planet
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=ec6f072c7125377a9bc0ae61598095f4:1d5388e0781415ebcec9914f5ad75875
-https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/ap.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=Animal-planet
 #EXTINF:-1 tvg-id="outdoorhd" group-title="Quốc Tế",Outdoor
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
@@ -590,7 +590,7 @@ https://livevlisctcdnw.seenow.vn/mean/OUTDOORCHANNEL/manifest.mpd
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=eb4160ea553a321d899553e4e796fec2:bea5a07157e0c4d17b11ab399517f952
-https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/dsc.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=Discovery
 #EXTINF:-1 tvg-id="tlc" group-title="Quốc Tế",TLC
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
@@ -602,22 +602,22 @@ https://s129135.cdn.mytvnet.vn/pkg20/live_dzones/tlc.smil/manifest.mpd
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=934907b134be3963a6263a453846924c:788e2835fb98568aed2f47bbdc091515
-https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/dscasia.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=Discovery+Asia
 #EXTINF:-1 tvg-id="fashiontv" group-title="Quốc Tế",Fashion TV
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=c1d9f25701023508bfa6737e3a8c7001:30c3613e9b06e0f7cc201014f31bf5d8
-https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/ftv.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=Fashion+TV
 #EXTINF:-1 tvg-id="kbsworld" group-title="Quốc Tế",KBS World
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://live.fptplay53.net/epzhd2/kbs_hls.smil/chunklist.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=KBS+World
 #EXTINF:-1 tvg-id="nhkworld" group-title="Quốc Tế",NHK World Japan
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://live.fptplay53.net/fnxhd2/nhkworld_vhls.smil/chunklist.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=NHK+World+Japan
 #EXTINF:-1 tvg-id="france24" group-title="Quốc Tế",France 24
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://live.fptplay53.net/fnxhd2/france24_hls.smil/chunklist.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=France+24
 #EXTINF:-1 tvg-id="cnbcsd" group-title="Quốc Tế",CNBC
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 https://live.fptplay53.net/fnxsd1/cnbc_hls.smil/chunklist.m3u8
@@ -630,13 +630,13 @@ https://live.fptplay53.net/fnxhd2/dwenglish_hls.smil/chunklist.m3u8
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=714cc8ed05a03abb9ac61bd4bbd1d8a0:1acf58ff8d4cd87c2d3c12d22248efb1
-https://s7771.cdn.mytvnet.vn/pkg20/live_dzones/cnn.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=CNN
 #EXTINF:-1 tvg-id="arirang" group-title="Quốc Tế",Arirang
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
-https://live.fptplay53.net/fnxhd2/arirang_hls.smil/chunklist.m3u8
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=Arirang
 #EXTINF:-1 tvg-id="bloomberg" group-title="Quốc Tế",Bloomberg
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=1071393f8fc237f3a9a28028142110f7:7a0f8c3c72e0ffff811d534c929c57c2
-https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/bloomberg.smil/manifest.mpd
+https://vietmitv-stream.viet-ng228.workers.dev/channel?group=Qu%E1%BB%91c+T%E1%BA%BF&name=Bloomberg
