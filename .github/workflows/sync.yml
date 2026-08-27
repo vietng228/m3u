@@ -28,6 +28,8 @@ jobs:
 
       - name: Run sync script
         run: python scripts/update.py
+        env:
+          UPSTREAM_PLAYLIST_URL: ${{ secrets.UPSTREAM_PLAYLIST_URL }}
 
       - name: Commit and push if changed
         run: |

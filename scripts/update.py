@@ -3,14 +3,19 @@
 import re
 import sys
 import unicodedata
+import os
+from urllib.parse import parse_qs, urlencode, urlparse
 from pathlib import Path
 
 import requests
 
 
-SOURCE_URL = "http://tv.vietanhtv.top/sex"
+SOURCE_URL = os.environ.get("UPSTREAM_PLAYLIST_URL", "")
 
 TARGET_FILE = "m3u.m3u"
+
+# Replace this after `wrangler deploy` if Cloudflare assigns a different URL.
+WORKER_BASE_URL = "https://vietmitv-stream.viet-ng228.workers.dev"
 
 
 def fetch(url: str) -> str:
@@ -88,7 +93,7 @@ def normalize_group(group: str) -> str:
 
 
 def is_radio_block(block) -> bool:
-    """Nhận diện block radio trong nguồn VietAnh để loại trước khi tạo map."""
+    """Nhận diện block radio trong nguồn upstream để loại trước khi tạo map."""
     if not block:
         return False
 
@@ -112,7 +117,7 @@ def is_radio_block(block) -> bool:
 
 
 def build_source_map(source_text: str):
-    """Tạo map (group-title, tên kênh) -> block VietAnh, bỏ toàn bộ radio."""
+    """Tạo map (group-title, tên kênh) -> block upstream, bỏ toàn bộ radio."""
     source_blocks = split_blocks(source_text)
     source_map = {}
     duplicate_keys = set()
@@ -145,12 +150,57 @@ def build_source_map(source_text: str):
 
 
 def merge_block(target_block, source_block):
-    """Giữ nguyên #EXTINF target và thay toàn bộ body bằng body nguồn."""
+    """Giữ EXTINF, dùng metadata nguồn và URL Worker cố định cho stream/license."""
     if not target_block:
         return source_block
     if not source_block:
         return target_block
-    return [target_block[0], *source_block[1:]]
+    group = get_group_title(source_block)
+    name = get_channel_name(source_block)
+    query = urlencode({"group": group, "name": name})
+    stream_url = f"{WORKER_BASE_URL}/channel?{query}"
+    license_url = f"{stream_url}&kind=license"
+    logo_url = f"{stream_url}&kind=logo"
+
+    extinf = target_block[0]
+    logo_match = re.search(r'tvg-logo\s*=\s*"([^"]+)"', extinf, re.IGNORECASE)
+    if logo_match and is_private_upstream_url(logo_match.group(1)):
+        extinf = extinf[:logo_match.start(1)] + logo_url + extinf[logo_match.end(1):]
+        extinf = extinf.rstrip()
+
+    body = []
+    for line in source_block[1:]:
+        if re.match(
+            r"^#KODIPROP:inputstream\.adaptive\.license_key=https?://",
+            line,
+            flags=re.IGNORECASE,
+        ) and is_private_upstream_url(line.split("=", 1)[1]):
+            body.append(
+                re.sub(r"=https?://[^|\s]+", f"={license_url}", line, count=1)
+            )
+        elif (
+            re.match(r"^https?://", line, flags=re.IGNORECASE)
+            and is_private_upstream_url(line)
+        ):
+            body.append(stream_url)
+        else:
+            body.append(line)
+
+    return [extinf, *body]
+
+
+def is_private_upstream_url(url: str) -> bool:
+    """Ẩn URL upstream riêng và các URL ký động sau Worker."""
+    try:
+        query = parse_qs(urlparse(url.strip()).query, keep_blank_values=True)
+    except ValueError:
+        return False
+    keys = {key.lower() for key in query}
+    hostname = (urlparse(url.strip()).hostname or "").lower()
+    private_host = "viet" + "anhtv"
+    return private_host in hostname or bool(
+        keys.intersection({"token", "expires", "expiry", "signature"})
+    )
 
 
 def update_target_file(target_file: str, source_map: dict):
@@ -221,7 +271,7 @@ def update_target_file(target_file: str, source_map: dict):
             same_count += 1
         else:
             print(f"[UPDATE]          {label}")
-            print("  Đồng bộ metadata + link từ VietAnh")
+            print("  Đồng bộ metadata + link từ upstream")
             updated_blocks.append(new_block)
             updated_count += 1
 
@@ -255,14 +305,14 @@ def update_target_file(target_file: str, source_map: dict):
 
 def main():
     print("=" * 72)
-    print("       UPDATE PLAYLIST THEO NHÓM KÊNH VIETANH")
+    print("       UPDATE PLAYLIST THEO NHÓM KÊNH UPSTREAM")
     print("=" * 72)
-    print(f"\nNguồn:\n  {SOURCE_URL}\n")
+    print("\nNguồn upstream: đã cấu hình qua secret.\n")
 
     try:
         source_text = fetch(SOURCE_URL)
     except requests.RequestException as error:
-        print(f"[LỖI] Không tải được playlist VietAnh:\n  {error}")
+        print(f"[LỖI] Không tải được playlist upstream:\n  {error}")
         sys.exit(1)
     except Exception as error:
         print(f"[LỖI] Có lỗi khi tải playlist:\n  {error}")
@@ -271,7 +321,7 @@ def main():
     source_blocks, source_map, duplicate_keys, radio_count = build_source_map(
         source_text
     )
-    print(f"Tìm thấy {len(source_blocks)} block trong playlist VietAnh.")
+    print(f"Tìm thấy {len(source_blocks)} block trong playlist upstream.")
     print(f"Đã loại {radio_count} block radio khỏi nguồn.")
     print(f"Tạo map được {len(source_map)} cặp nhóm + kênh TV.")
 
@@ -282,7 +332,7 @@ def main():
         print("Kênh trùng hoàn toàn sẽ dùng block xuất hiện sau cùng.")
 
     if not source_map:
-        print("\n[LỖI] Playlist VietAnh không có dữ liệu TV hợp lệ.")
+        print("\n[LỖI] Playlist upstream không có dữ liệu TV hợp lệ.")
         print("Không thay đổi file nào.")
         sys.exit(1)
 

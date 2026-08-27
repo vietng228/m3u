@@ -1,0 +1,15 @@
+{
+  "name": "vietmitv-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "wrangler deploy --dry-run && tsc --noEmit",
+    "test": "vitest run",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "typescript": "latest",
+    "vitest": "latest",
+    "wrangler": "latest"
+  }
+}
