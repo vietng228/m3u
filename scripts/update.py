@@ -16,8 +16,8 @@ TARGET_FILE = "m3u.m3u"
 
 WORKER_BASE_URL = "https://vietmitv-stream.viet-ng228.workers.dev"
 
-SYNC_GROUPS = ("VTVcab", "HTV")
-DIRECT_REFRESH_CHANNELS = (("SCTV", "SCTV4K"),)
+FULL_COPY_GROUPS = ("VTV", "HTV", "Địa Phương", "Quốc Tế")
+VTV_CAB_GROUP = "VTVcab"
 
 
 def fetch(url: str) -> str:
@@ -160,6 +160,7 @@ def merge_block(target_block, source_block):
     name = get_channel_name(source_block)
     query = urlencode({"group": group, "name": name})
     stream_url = f"{WORKER_BASE_URL}/channel?{query}"
+    license_url = f"{stream_url}&kind=license"
 
     body = []
     for line in source_block[1:]:
@@ -168,7 +169,9 @@ def merge_block(target_block, source_block):
             line,
             flags=re.IGNORECASE,
         ):
-            body.append(line)
+            body.append(re.sub(
+                r"=https?://[^|\s]+", f"={license_url}", line, count=1
+            ))
         elif re.match(r"^https?://", line, flags=re.IGNORECASE):
             body.append(stream_url)
         else:
@@ -218,12 +221,8 @@ def sanitize_target_file(target_file: str) -> None:
 
 
 def update_existing_channels(target_blocks, source_map):
-    """Không thêm/xóa kênh; lấy logo và chỉ đổi stream của VTVcab/HTV."""
-    selected = {normalize_group(group) for group in SYNC_GROUPS}
-    direct_refresh = {
-        (normalize_group(group), normalize_name(name))
-        for group, name in DIRECT_REFRESH_CHANNELS
-    }
+    """VTVcab chỉ dùng Worker khi block nguồn có DRM key động."""
+    vtvcab = normalize_group(VTV_CAB_GROUP)
     output = []
 
     for target_block in target_blocks:
@@ -239,13 +238,38 @@ def update_existing_channels(target_blocks, source_map):
         source_block = source["block"]
         extinf = sanitize_extinf(target_block[0], get_logo(source_block))
         metadata_target = [extinf, *target_block[1:]]
-        if normalize_group(group) in selected:
-            output.append(merge_block(metadata_target, source_block))
-        elif key in direct_refresh:
-            output.append([extinf, *source_block[1:]])
+        if normalize_group(group) == vtvcab:
+            has_key = any(
+                re.match(r"^#KODIPROP:inputstream\.adaptive\.license_key=https?://", line, re.I)
+                for line in source_block[1:]
+            )
+            output.append(merge_block(metadata_target, source_block) if has_key else [extinf, *source_block[1:]])
         else:
             output.append(metadata_target)
 
+    return output
+
+
+def replace_full_groups(target_blocks, source_map):
+    """Chép trọn VTV/HTV/Địa Phương/Quốc Tế; không lấy In The Box."""
+    selected = {normalize_group(group) for group in FULL_COPY_GROUPS}
+    source_groups = {key: [] for key in selected}
+    for source in source_map.values():
+        block = source["block"]
+        key = normalize_group(get_group_title(block))
+        if key in source_groups:
+            source_groups[key].append([sanitize_extinf(block[0], get_logo(block)), *block[1:]])
+
+    output, inserted = [], set()
+    for block in target_blocks:
+        key = normalize_group(get_group_title(block))
+        if key not in selected:
+            output.append(block)
+        elif key not in inserted:
+            output.extend(source_groups[key])
+            inserted.add(key)
+    for key in selected - inserted:
+        output.extend(source_groups[key])
     return output
 
 
@@ -288,7 +312,9 @@ def update_target_file(target_file: str, source_map: dict):
         for group in target_groups.values():
             print(f"  - {group}")
 
-    updated_blocks = update_existing_channels(target_blocks, source_map)
+    updated_blocks = replace_full_groups(
+        update_existing_channels(target_blocks, source_map), source_map
+    )
     updated_count = sum(
         (normalize_group(get_group_title(block)), normalize_name(get_channel_name(block)))
         in source_map
