@@ -4,7 +4,7 @@ import re
 import sys
 import unicodedata
 import os
-from urllib.parse import parse_qs, urlencode, urlparse
+from urllib.parse import urlencode
 from pathlib import Path
 
 import requests
@@ -160,13 +160,6 @@ def merge_block(target_block, source_block):
     query = urlencode({"group": group, "name": name})
     stream_url = f"{WORKER_BASE_URL}/channel?{query}"
     license_url = f"{stream_url}&kind=license"
-    logo_url = f"{stream_url}&kind=logo"
-
-    extinf = target_block[0]
-    logo_match = re.search(r'tvg-logo\s*=\s*"([^"]+)"', extinf, re.IGNORECASE)
-    if logo_match and is_private_upstream_url(logo_match.group(1)):
-        extinf = extinf[:logo_match.start(1)] + logo_url + extinf[logo_match.end(1):]
-        extinf = extinf.rstrip()
 
     body = []
     for line in source_block[1:]:
@@ -174,33 +167,47 @@ def merge_block(target_block, source_block):
             r"^#KODIPROP:inputstream\.adaptive\.license_key=https?://",
             line,
             flags=re.IGNORECASE,
-        ) and is_private_upstream_url(line.split("=", 1)[1]):
+        ):
             body.append(
                 re.sub(r"=https?://[^|\s]+", f"={license_url}", line, count=1)
             )
-        elif (
-            re.match(r"^https?://", line, flags=re.IGNORECASE)
-            and is_private_upstream_url(line)
-        ):
+        elif re.match(r"^https?://", line, flags=re.IGNORECASE):
             body.append(stream_url)
         else:
             body.append(line)
 
-    return [extinf, *body]
+    return [target_block[0], *body]
 
 
-def is_private_upstream_url(url: str) -> bool:
-    """Ẩn URL upstream riêng và các URL ký động sau Worker."""
-    try:
-        query = parse_qs(urlparse(url.strip()).query, keep_blank_values=True)
-    except ValueError:
-        return False
-    keys = {key.lower() for key in query}
-    hostname = (urlparse(url.strip()).hostname or "").lower()
-    private_host = "viet" + "anhtv"
-    return private_host in hostname or bool(
-        keys.intersection({"token", "expires", "expiry", "signature"})
+def sanitize_extinf(extinf: str) -> str:
+    """Chỉ giữ tvg-id, group-title và tên kênh cần cho playlist/matching."""
+    tvg_id_match = re.search(r'tvg-id\s*=\s*"([^"]*)"', extinf, re.IGNORECASE)
+    group = get_group_title([extinf])
+    name = get_channel_name([extinf])
+    attributes = []
+    if tvg_id_match and tvg_id_match.group(1).strip():
+        attributes.append(f'tvg-id="{tvg_id_match.group(1).strip()}"')
+    if group:
+        attributes.append(f'group-title="{group}"')
+    suffix = f" {' '.join(attributes)}" if attributes else ""
+    return f"#EXTINF:-1{suffix},{name}"
+
+
+def sanitize_target_file(target_file: str) -> None:
+    """Chuẩn hóa metadata EXTINF mà không cần tải upstream."""
+    path = Path(target_file)
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines()
+    first_block = next(
+        (i for i, line in enumerate(lines) if line.startswith("#EXTINF")),
+        len(lines),
     )
+    output = lines[:first_block]
+    for block in split_blocks("\n".join(lines[first_block:])):
+        if block:
+            block[0] = sanitize_extinf(block[0])
+        output.extend(block)
+    path.write_text("\n".join(output) + "\n", encoding="utf-8", newline="\n")
 
 
 def update_target_file(target_file: str, source_map: dict):
@@ -228,6 +235,9 @@ def update_target_file(target_file: str, source_map: dict):
     )
     header_lines = target_lines[:first_block]
     target_blocks = split_blocks("\n".join(target_lines[first_block:]))
+    for block in target_blocks:
+        if block:
+            block[0] = sanitize_extinf(block[0])
 
     target_groups = {}
     for block in target_blocks:
@@ -304,6 +314,11 @@ def update_target_file(target_file: str, source_map: dict):
 
 
 def main():
+    if "--sanitize-only" in sys.argv:
+        sanitize_target_file(TARGET_FILE)
+        print(f"Đã chuẩn hóa metadata: {TARGET_FILE}")
+        return
+
     print("=" * 72)
     print("       UPDATE PLAYLIST THEO NHÓM KÊNH UPSTREAM")
     print("=" * 72)
