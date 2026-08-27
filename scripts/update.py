@@ -4,6 +4,8 @@ import re
 import sys
 import unicodedata
 import os
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.parse import urlencode
 from pathlib import Path
 
@@ -18,6 +20,7 @@ WORKER_BASE_URL = "https://vietmitv-stream.viet-ng228.workers.dev"
 
 FULL_COPY_GROUPS = ("VTV", "HTV", "Địa Phương", "Quốc Tế")
 VTV_CAB_GROUP = "VTVcab"
+INTERNATIONAL_GROUP = "Quốc Tế"
 
 
 def fetch(url: str) -> str:
@@ -185,6 +188,86 @@ def get_logo(block) -> str:
         return ""
     match = re.search(r'tvg-logo\s*=\s*"([^"]*)"', block[0], re.IGNORECASE)
     return match.group(1).strip() if match else ""
+
+
+def get_stream_url(block) -> str:
+    """Lấy URL stream cuối block, bỏ phần header nối sau dấu |."""
+    for line in reversed(block[1:]):
+        if re.match(r"^https?://", line, re.IGNORECASE):
+            return line.split("|", 1)[0].strip()
+    return ""
+
+
+def stream_headers(block) -> dict:
+    headers = {"User-Agent": "Mozilla/5.0"}
+    for line in block[1:]:
+        if line.lower().startswith("#extvlcopt:http-user-agent="):
+            headers["User-Agent"] = line.split("=", 1)[1].strip()
+        elif line.lower().startswith("#extvlcopt:http-referrer="):
+            headers["Referer"] = line.split("=", 1)[1].strip()
+    return headers
+
+
+def is_stream_reachable(block) -> bool:
+    """GET thật và xác nhận manifest/media, thử lại một lần khi lỗi."""
+    url = get_stream_url(block)
+    if not url:
+        return False
+
+    headers = stream_headers(block)
+    headers["Range"] = "bytes=0-65535"
+    for attempt in range(2):
+        try:
+            with requests.get(
+                url,
+                headers=headers,
+                timeout=(8, 15),
+                allow_redirects=True,
+                stream=True,
+            ) as response:
+                if response.status_code not in (200, 206):
+                    raise requests.HTTPError(str(response.status_code))
+                sample = next(response.iter_content(65536), b"")
+                content_type = response.headers.get("content-type", "").lower()
+                lower_url = response.url.lower().split("?", 1)[0]
+                if lower_url.endswith(".m3u8") or "mpegurl" in content_type:
+                    return b"#EXTM3U" in sample.upper()
+                if lower_url.endswith(".mpd") or "dash+xml" in content_type:
+                    return b"<MPD" in sample.upper()
+                return bool(sample)
+        except (requests.RequestException, StopIteration):
+            if attempt == 0:
+                time.sleep(1)
+    return False
+
+
+def filter_reachable_international(source_map: dict) -> dict:
+    """Chỉ giữ kênh Quốc Tế vượt kiểm tra phát, chạy song song để Sync nhanh."""
+    international = normalize_group(INTERNATIONAL_GROUP)
+    candidates = {
+        key: source for key, source in source_map.items()
+        if key[0] == international
+    }
+    reachable = set()
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        futures = {
+            executor.submit(is_stream_reachable, source["block"]): key
+            for key, source in candidates.items()
+        }
+        for future in as_completed(futures):
+            key = futures[future]
+            try:
+                if future.result():
+                    reachable.add(key)
+                else:
+                    print(f"[REMOVE BROKEN] [International] {candidates[key]['name']}")
+            except Exception as error:
+                print(f"[REMOVE BROKEN] [International] {candidates[key]['name']}: {error}")
+
+    return {
+        key: source for key, source in source_map.items()
+        if key[0] != international or key in reachable
+    }
 
 
 def sanitize_extinf(extinf: str, logo: str = "") -> str:
@@ -389,6 +472,8 @@ def main():
         print("\n[LỖI] Playlist upstream không có dữ liệu TV hợp lệ.")
         print("Không thay đổi file nào.")
         sys.exit(1)
+
+    source_map = filter_reachable_international(source_map)
 
     # Xử lý trực tiếp 1 file đích
     result = update_target_file(TARGET_FILE, source_map)
