@@ -1,8 +1,13 @@
 name: Sync
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/sync.yml'
   schedule:
-     - cron: '7,22,37,52 * * * *'
+    - cron: '7,22,37,52 * * * *'
   workflow_dispatch: {}
 
 permissions:
@@ -25,6 +30,52 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install requests
+
+      - name: Restore repository logos
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          path = Path('m3u.m3u')
+          lines = path.read_text(encoding='utf-8').splitlines()
+          output = []
+          restored = 0
+
+          for line in lines:
+              if not line.startswith('#EXTINF'):
+                  output.append(line)
+                  continue
+
+              match = re.search(r'tvg-id\s*=\s*"([^"]+)"', line, re.I)
+              if not match:
+                  output.append(line)
+                  continue
+
+              tvg_id = match.group(1).strip()
+              logo = f'https://raw.githubusercontent.com/vietng228/m3u/main/logos/{tvg_id}.png'
+
+              if re.search(r'tvg-logo\s*=\s*"[^"]*"', line, re.I):
+                  new_line = re.sub(
+                      r'tvg-logo\s*=\s*"[^"]*"',
+                      f'tvg-logo="{logo}"',
+                      line,
+                      count=1,
+                      flags=re.I,
+                  )
+              elif ',' in line:
+                  head, name = line.rsplit(',', 1)
+                  new_line = f'{head} tvg-logo="{logo}",{name}'
+              else:
+                  new_line = line
+
+              if new_line != line:
+                  restored += 1
+              output.append(new_line)
+
+          path.write_text('\n'.join(output) + '\n', encoding='utf-8', newline='\n')
+          print(f'Restored repository logos: {restored}')
+          PY
 
       - name: Run sync script
         run: python scripts/update.py
