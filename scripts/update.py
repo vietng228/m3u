@@ -52,6 +52,11 @@ def split_blocks(text: str):
     return blocks
 
 
+def get_extinf_lines(text: str):
+    """Lấy nguyên văn mọi dòng #EXTINF để dùng làm khóa an toàn."""
+    return [line for line in text.splitlines() if line.startswith("#EXTINF")]
+
+
 def get_channel_name(block) -> str:
     if not block or "," not in block[0]:
         return ""
@@ -397,6 +402,17 @@ def update_target_file(target_file: str, source_map: dict):
         output_lines.extend(block)
 
     new_text = "\n".join(output_lines) + ("\n" if output_lines else "")
+    original_extinf = get_extinf_lines(target_text)
+    output_extinf = get_extinf_lines(new_text)
+
+    # Fail-safe toàn file: không ghi nếu bất kỳ #EXTINF nào bị sửa, thêm,
+    # xóa hoặc đổi thứ tự. Kiểm tra độc lập với merge_channel để bảo vệ cả
+    # những thay đổi vô tình trong quá trình dựng lại playlist.
+    if output_extinf != original_extinf:
+        raise RuntimeError(
+            "Fail-safe: danh sách #EXTINF đã thay đổi; hủy ghi m3u.m3u"
+        )
+
     normalized_old_text = (
         target_text.replace("\r\n", "\n").replace("\r", "\n")
     )
