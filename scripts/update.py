@@ -13,11 +13,16 @@ import requests
 
 
 SOURCE_URL = os.environ.get("UPSTREAM_PLAYLIST_URL", "")
+INTERNATIONAL_SOURCE_URL = os.environ.get(
+    "INTERNATIONAL_PLAYLIST_URL",
+    "https://raw.githubusercontent.com/vuminhthanh12/vuminhthanh12/main/vmttv",
+)
 TARGET_FILE = "m3u.m3u"
 WORKER_BASE_URL = "https://vietmitv-stream.viet-ng228.workers.dev"
 
 VTV_CAB_GROUP = "VTVcab"
 INTERNATIONAL_GROUP = "Quốc Tế"
+MERGED_INTERNATIONAL_GROUPS = {"Quốc Tế", "In The Box"}
 
 
 def fetch(url: str) -> str:
@@ -75,6 +80,18 @@ def get_group_title(block) -> str:
     return match.group(1).strip() if match else ""
 
 
+def get_tvg_id(block) -> str:
+    if not block:
+        return ""
+
+    match = re.search(
+        r'tvg-id\s*=\s*"([^"]*)"',
+        block[0],
+        flags=re.IGNORECASE,
+    )
+    return match.group(1).strip() if match else ""
+
+
 def normalize_text(text: str, preserve_plus: bool = False) -> str:
     """Chỉ chuẩn hóa để đối chiếu; tuyệt đối không dùng để ghi lại metadata."""
     text = text.strip().lower().replace("đ", "d")
@@ -97,6 +114,10 @@ def normalize_name(name: str) -> str:
 
 def normalize_group(group: str) -> str:
     return normalize_text(group).replace(" ", "")
+
+
+def normalize_tvg_id(tvg_id: str) -> str:
+    return tvg_id.strip().lower()
 
 
 def is_radio_block(block) -> bool:
@@ -152,6 +173,31 @@ def build_source_map(source_text: str):
         }
 
     return source_blocks, source_map, duplicate_keys, radio_count
+
+
+def build_source_id_map(source_text: str):
+    """Map nguồn Quốc Tế/In The Box theo tvg-id, không dựa vào tên/nhóm."""
+    source_map = {}
+    duplicate_ids = set()
+
+    for block in split_blocks(source_text):
+        if is_radio_block(block):
+            continue
+
+        tvg_id = normalize_tvg_id(get_tvg_id(block))
+        if not tvg_id:
+            continue
+
+        if tvg_id in source_map:
+            duplicate_ids.add(tvg_id)
+
+        source_map[tvg_id] = {
+            "name": get_channel_name(block),
+            "group": get_group_title(block),
+            "block": block,
+        }
+
+    return source_map, duplicate_ids
 
 
 def get_stream_url(block) -> str:
@@ -319,7 +365,11 @@ def merge_channel(target_block, source_block):
     return [target_extinf, *source_body]
 
 
-def update_target_file(target_file: str, source_map: dict):
+def update_target_file(
+    target_file: str,
+    source_map: dict,
+    international_source_by_id: dict | None = None,
+):
     print()
     print("=" * 72)
     print(f" ĐANG XỬ LÝ: {target_file}")
@@ -362,6 +412,9 @@ def update_target_file(target_file: str, source_map: dict):
 
     header_lines = target_lines[:first_block]
     target_blocks = split_blocks("\n".join(target_lines[first_block:]))
+    merged_international_groups = {
+        normalize_group(item) for item in MERGED_INTERNATIONAL_GROUPS
+    }
 
     updated_blocks = []
     updated_count = 0
@@ -371,13 +424,24 @@ def update_target_file(target_file: str, source_map: dict):
     for target_block in target_blocks:
         group = get_group_title(target_block)
         name = get_channel_name(target_block)
-        key = (normalize_group(group), normalize_name(name))
-        source = source_map.get(key)
+        group_key = normalize_group(group)
+        tvg_id = normalize_tvg_id(get_tvg_id(target_block))
+
+        if (
+            group_key in merged_international_groups
+            and tvg_id
+        ):
+            source = (international_source_by_id or {}).get(tvg_id)
+            match_label = f"tvg-id={tvg_id}"
+        else:
+            key = (group_key, normalize_name(name))
+            source = source_map.get(key)
+            match_label = "group-title + tên"
 
         if not source:
             updated_blocks.append(target_block)
             not_found_count += 1
-            print(f"[KHÔNG TÌM THẤY] [{group}] {name}")
+            print(f"[KHÔNG TÌM THẤY] [{group}] {name} ({match_label})")
             continue
 
         new_block = merge_channel(target_block, source["block"])
@@ -455,7 +519,8 @@ def main():
     print("=" * 72)
     print("       UPDATE PLAYLIST - GIỮ NGUYÊN ICON/METADATA GỐC")
     print("=" * 72)
-    print("\nNguồn upstream: cấu hình qua UPSTREAM_PLAYLIST_URL.\n")
+    print("\nNguồn upstream: cấu hình qua UPSTREAM_PLAYLIST_URL.")
+    print(f"Nguồn Quốc Tế/In The Box theo tvg-id: {INTERNATIONAL_SOURCE_URL}\n")
 
     try:
         source_text = fetch(SOURCE_URL)
@@ -470,6 +535,19 @@ def main():
         source_text
     )
 
+    try:
+        if INTERNATIONAL_SOURCE_URL == SOURCE_URL:
+            international_source_text = source_text
+        else:
+            international_source_text = fetch(INTERNATIONAL_SOURCE_URL)
+    except requests.RequestException as error:
+        print(f"[LỖI] Không tải được nguồn Quốc Tế/In The Box:\n  {error}")
+        sys.exit(1)
+
+    international_source_by_id, duplicate_ids = build_source_id_map(
+        international_source_text
+    )
+
     print(f"Tìm thấy {len(source_blocks)} block upstream.")
     print(f"Đã loại {radio_count} block radio.")
     print(f"Tạo map được {len(source_map)} cặp group-title + tên kênh.")
@@ -480,13 +558,24 @@ def main():
         )
         print("Kênh trùng hoàn toàn dùng block xuất hiện sau cùng.")
 
+    if duplicate_ids:
+        print(
+            f"Cảnh báo: {len(duplicate_ids)} tvg-id bị trùng trong nguồn "
+            "Quốc Tế/In The Box."
+        )
+        print("tvg-id trùng dùng block xuất hiện sau cùng.")
+
     if not source_map:
         print("\n[LỖI] Playlist upstream không có dữ liệu TV hợp lệ.")
         print("Không thay đổi file nào.")
         sys.exit(1)
 
     source_map = filter_reachable_international(source_map)
-    result = update_target_file(TARGET_FILE, source_map)
+    result = update_target_file(
+        TARGET_FILE,
+        source_map,
+        international_source_by_id,
+    )
 
     print("\n" + "=" * 72)
     print("                           TỔNG KẾT")
