@@ -550,6 +550,10 @@ https://livevlisctcdnw.seenow.vn/Live_DASHDRM1/WO/manifest.mpd
 #EXTINF:-1 tvg-id="tvbvn" group-title="Quốc Tế" tvg-logo="https://raw.githubusercontent.com/vietng228/m3u/main/logos/tvb-vietnam.png", TVB Việt Nam
 https://amg01868-amg01868c3-tvbanywhere-us-4491.playouts.now.amagi.tv/playlist1080p.m3u8
 
+#EXTINF:-1 tvg-id="davincihd" group-title="Quốc Tế" tvg-logo="https://raw.githubusercontent.com/vietng228/m3u/main/logos/davinci.png", Da Vinci HD
+#EXTVLCOPT:http-user-agent=VThanhTivi
+https://live.fptplay53.net/fnxhd2/davincihd_vhls.smil/chunklist_b5000000.m3u8
+
 #EXTINF:-1 tvg-id="warnertvhd" group-title="Quốc Tế" tvg-logo="https://raw.githubusercontent.com/vietng228/m3u/main/logos/warnertv.png", Warner TV
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
@@ -598,6 +602,23 @@ https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/cn.smil/manifest.mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=b1f0d759e914369db388b3b0dc815971:5678d317e17007a88a9b9539e4526512
 https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/boomerang.smil/manifest.mpd
+
+#EXTINF:-1 tvg-id="france24eng" group-title="Quốc Tế" tvg-logo="https://m.media-amazon.com/images/I/81oryzEMf-L.png", France 24
+https://live.france24.com/hls/live/2037218/F24_EN_HI_HLS/master_5000.m3u8
+
+#EXTINF:-1 tvg-id="" group-title="Quốc Tế" tvg-logo="https://information.tv5monde.com/sites/tv5-info/files/styles/entete/public/2023-11/tv5monde_logo.jpg", TV5Monde
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://freem3u.xyz/api/live/play.m3u8?vid=9852
+
+#EXTINF:-1 tvg-id="dw" group-title="Quốc Tế" tvg-logo="https://i.ytimg.com/vi/puzK9XqJ6-Y/hq720.jpg", DW
+#EXTVLCOPT:http-user-agent=Dalvik/2.1.0
+https://freem3u.xyz/api/live/play.m3u8?vid=109
+
+#EXTINF:-1 tvg-id="arirang" group-title="Quốc Tế" tvg-logo="https://i.ytimg.com/vi/ZqVyukYe4YM/hq720.jpg", Arirang
+https://live.fptplay53.net/fnxhd1/airanghd_vhls.smil/chunklist_b5000000.m3u8
+
+#EXTINF:-1 tvg-id="" group-title="Quốc Tế" tvg-logo="https://raw.githubusercontent.com/vuminhthanh12/Logo/refs/heads/main/nhkworld.png", NHK World
+https://live.fptplay53.net/fnxhd2/nhkworld_vhls.smil/chunklist_b5000000.m3u8 
 
 #EXTINF:-1 tvg-id="cbeebies" group-title="Quốc Tế" tvg-logo="https://raw.githubusercontent.com/vietng228/m3u/main/logos/bbc-cbeebies.png", BBC Cbeebies
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
