@@ -13,16 +13,19 @@ import requests
 
 
 SOURCE_URL = os.environ.get("UPSTREAM_PLAYLIST_URL", "")
-INTERNATIONAL_SOURCE_URL = os.environ.get(
-    "INTERNATIONAL_PLAYLIST_URL",
-    "https://raw.githubusercontent.com/vuminhthanh12/vuminhthanh12/main/vmttv",
+TVG_ID_SOURCE_URL = os.environ.get(
+    "TVG_ID_PLAYLIST_URL",
+    os.environ.get(
+        "INTERNATIONAL_PLAYLIST_URL",
+        "https://raw.githubusercontent.com/vuminhthanh12/vuminhthanh12/main/vmttv",
+    ),
 )
 TARGET_FILE = "m3u.m3u"
 WORKER_BASE_URL = "https://vietmitv-stream.viet-ng228.workers.dev"
 
 VTV_CAB_GROUP = "VTVcab"
 INTERNATIONAL_GROUP = "Quốc Tế"
-MERGED_INTERNATIONAL_GROUPS = {"Quốc Tế", "In The Box"}
+TVG_ID_SOURCE_GROUPS = {"Quốc Tế", "In The Box", "Địa Phương"}
 
 
 def fetch(url: str) -> str:
@@ -176,7 +179,7 @@ def build_source_map(source_text: str):
 
 
 def build_source_id_map(source_text: str):
-    """Map nguồn Quốc Tế/In The Box theo tvg-id, không dựa vào tên/nhóm."""
+    """Map nguồn vmttv theo tvg-id, không dựa vào tên hoặc group-title."""
     source_map = {}
     duplicate_ids = set()
 
@@ -368,7 +371,7 @@ def merge_channel(target_block, source_block):
 def update_target_file(
     target_file: str,
     source_map: dict,
-    international_source_by_id: dict | None = None,
+    tvg_id_source_map: dict | None = None,
 ):
     print()
     print("=" * 72)
@@ -412,8 +415,8 @@ def update_target_file(
 
     header_lines = target_lines[:first_block]
     target_blocks = split_blocks("\n".join(target_lines[first_block:]))
-    merged_international_groups = {
-        normalize_group(item) for item in MERGED_INTERNATIONAL_GROUPS
+    tvg_id_source_groups = {
+        normalize_group(item) for item in TVG_ID_SOURCE_GROUPS
     }
 
     updated_blocks = []
@@ -428,10 +431,10 @@ def update_target_file(
         tvg_id = normalize_tvg_id(get_tvg_id(target_block))
 
         if (
-            group_key in merged_international_groups
+            group_key in tvg_id_source_groups
             and tvg_id
         ):
-            source = (international_source_by_id or {}).get(tvg_id)
+            source = (tvg_id_source_map or {}).get(tvg_id)
             match_label = f"tvg-id={tvg_id}"
         else:
             key = (group_key, normalize_name(name))
@@ -520,7 +523,7 @@ def main():
     print("       UPDATE PLAYLIST - GIỮ NGUYÊN ICON/METADATA GỐC")
     print("=" * 72)
     print("\nNguồn upstream: cấu hình qua UPSTREAM_PLAYLIST_URL.")
-    print(f"Nguồn Quốc Tế/In The Box theo tvg-id: {INTERNATIONAL_SOURCE_URL}\n")
+    print(f"Nguồn Quốc Tế/In The Box/Địa Phương theo tvg-id: {TVG_ID_SOURCE_URL}\n")
 
     try:
         source_text = fetch(SOURCE_URL)
@@ -536,16 +539,19 @@ def main():
     )
 
     try:
-        if INTERNATIONAL_SOURCE_URL == SOURCE_URL:
-            international_source_text = source_text
+        if TVG_ID_SOURCE_URL == SOURCE_URL:
+            tvg_id_source_text = source_text
         else:
-            international_source_text = fetch(INTERNATIONAL_SOURCE_URL)
+            tvg_id_source_text = fetch(TVG_ID_SOURCE_URL)
     except requests.RequestException as error:
-        print(f"[LỖI] Không tải được nguồn Quốc Tế/In The Box:\n  {error}")
+        print(
+            "[LỖI] Không tải được nguồn Quốc Tế/In The Box/Địa Phương:"
+            f"\n  {error}"
+        )
         sys.exit(1)
 
-    international_source_by_id, duplicate_ids = build_source_id_map(
-        international_source_text
+    tvg_id_source_map, duplicate_ids = build_source_id_map(
+        tvg_id_source_text
     )
 
     print(f"Tìm thấy {len(source_blocks)} block upstream.")
@@ -561,7 +567,7 @@ def main():
     if duplicate_ids:
         print(
             f"Cảnh báo: {len(duplicate_ids)} tvg-id bị trùng trong nguồn "
-            "Quốc Tế/In The Box."
+            "vmttv."
         )
         print("tvg-id trùng dùng block xuất hiện sau cùng.")
 
@@ -574,7 +580,7 @@ def main():
     result = update_target_file(
         TARGET_FILE,
         source_map,
-        international_source_by_id,
+        tvg_id_source_map,
     )
 
     print("\n" + "=" * 72)
