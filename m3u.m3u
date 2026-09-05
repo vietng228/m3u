@@ -648,7 +648,7 @@ https://s129135.cdn.mytvnet.vn/pkg20/live_dzones/tlc.smil/manifest.mpd
 #KODIPROP:inputstream.adaptive.license_key=934907b134be3963a6263a453846924c:788e2835fb98568aed2f47bbdc091515
 https://s2129134.cdn.mytvnet.vn/pkg20/live_dzones/dscasia.smil/manifest.mpd
 
-#EXTINF:-1 tvg-id="fashiontvhd" group-title="Quốc Tế" tvg-logo="https://raw.githubusercontent.com/vietng228/m3u/main/logos/fashiontv.png", Fashion TV
+#EXTINF:-1 tvg-id="fashionhd" group-title="Quốc Tế" tvg-logo="https://raw.githubusercontent.com/vietng228/m3u/main/logos/fashiontv.png", Fashion TV
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=clearkey
