@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+import base64
+import binascii
+import json
 import os
 import re
 import sys
@@ -26,6 +29,7 @@ WORKER_BASE_URL = "https://vietmitv-stream.viet-ng228.workers.dev"
 VTV_CAB_GROUP = "VTVcab"
 INTERNATIONAL_GROUP = "Quốc Tế"
 TVG_ID_SOURCE_GROUPS = {"Quốc Tế", "In The Box", "Địa Phương"}
+LICENSE_KEY_PREFIX = "#KODIPROP:inputstream.adaptive.license_key="
 
 
 def fetch(url: str) -> str:
@@ -121,6 +125,47 @@ def normalize_group(group: str) -> str:
 
 def normalize_tvg_id(tvg_id: str) -> str:
     return tvg_id.strip().lower()
+
+
+def decode_base64url_hex(value: str) -> str:
+    """Đổi một ClearKey Base64URL 128-bit sang hex mà app đang hỗ trợ."""
+    padding = "=" * (-len(value) % 4)
+    decoded = base64.urlsafe_b64decode(value + padding)
+    if len(decoded) != 16:
+        raise ValueError("ClearKey phải dài đúng 16 byte")
+    return decoded.hex()
+
+
+def normalize_inline_clearkey(line: str) -> str:
+    """Đổi JWK JSON thành kid:key hex; giữ nguyên URL/hex sẵn có."""
+    if not line.lower().startswith(LICENSE_KEY_PREFIX.lower()):
+        return line
+
+    value = line[len(LICENSE_KEY_PREFIX):].strip()
+    if not value.startswith("{"):
+        return line
+
+    try:
+        payload = json.loads(value)
+        keys = payload.get("keys")
+        if not isinstance(keys, list) or not keys:
+            return line
+
+        pairs = []
+        for item in keys:
+            if not isinstance(item, dict):
+                return line
+            kid = item.get("kid")
+            key = item.get("k")
+            if not isinstance(kid, str) or not isinstance(key, str):
+                return line
+            pairs.append(
+                f"{decode_base64url_hex(kid)}:{decode_base64url_hex(key)}"
+            )
+
+        return LICENSE_KEY_PREFIX + ",".join(pairs)
+    except (ValueError, TypeError, binascii.Error, json.JSONDecodeError):
+        return line
 
 
 def is_radio_block(block) -> bool:
@@ -363,7 +408,7 @@ def merge_channel(target_block, source_block):
     if group == normalize_group(VTV_CAB_GROUP) and has_dynamic_license_url(source_block):
         source_body = build_worker_body(source_block)
     else:
-        source_body = list(source_block[1:])
+        source_body = [normalize_inline_clearkey(line) for line in source_block[1:]]
 
     return [target_extinf, *source_body]
 
