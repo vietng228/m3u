@@ -12,6 +12,29 @@ SPEC.loader.exec_module(update)
 
 
 class UpdatePlaylistTests(unittest.TestCase):
+    def test_local_source_uses_group_filter_and_tvg_id_alias(self):
+        source = (
+            '#EXTM3U\n'
+            '#EXTINF:-1 tvg-id="thvl1hd" group-title="Địa Phương",THVL1\n'
+            'https://vietanh.example/thvl1.m3u8\n'
+            '#EXTINF:-1 tvg-id="thvl1hd" group-title="Dự phòng",Sai nhóm\n'
+            'https://wrong.example/thvl1.m3u8\n'
+        )
+        source_map, duplicates = update.build_group_id_map(
+            source,
+            {update.LOCAL_SOURCE_GROUP},
+        )
+
+        target_id = "vinhlong1hd"
+        source_id = update.LOCAL_TVG_ID_ALIASES.get(target_id, target_id)
+
+        self.assertEqual(source_id, "thvl1hd")
+        self.assertEqual(duplicates, set())
+        self.assertEqual(
+            update.get_stream_url(source_map[source_id]["block"]),
+            "https://vietanh.example/thvl1.m3u8",
+        )
+
     def test_match_requires_normalized_group_and_current_name(self):
         source = (
             '#EXTM3U\n'
