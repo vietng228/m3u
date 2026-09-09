@@ -65,7 +65,6 @@ def fetch(url: str) -> str:
 
 
 def split_blocks(text: str):
-    """Tách playlist thành các block bắt đầu bằng #EXTINF."""
     blocks = []
     current = []
 
@@ -84,7 +83,6 @@ def split_blocks(text: str):
 
 
 def get_extinf_lines(text: str):
-    """Lấy nguyên văn mọi dòng #EXTINF để dùng làm khóa an toàn."""
     return [line for line in text.splitlines() if line.startswith("#EXTINF")]
 
 
@@ -119,7 +117,6 @@ def get_tvg_id(block) -> str:
 
 
 def normalize_text(text: str, preserve_plus: bool = False) -> str:
-    """Chỉ chuẩn hóa để đối chiếu; tuyệt đối không dùng để ghi lại metadata."""
     text = text.strip().lower().replace("đ", "d")
     text = unicodedata.normalize("NFD", text)
     text = "".join(
@@ -147,7 +144,6 @@ def normalize_tvg_id(tvg_id: str) -> str:
 
 
 def decode_base64url_hex(value: str) -> str:
-    """Đổi một ClearKey Base64URL 128-bit sang hex mà app đang hỗ trợ."""
     padding = "=" * (-len(value) % 4)
     decoded = base64.urlsafe_b64decode(value + padding)
     if len(decoded) != 16:
@@ -156,7 +152,6 @@ def decode_base64url_hex(value: str) -> str:
 
 
 def normalize_inline_clearkey(line: str) -> str:
-    """Đổi JWK JSON thành kid:key hex; giữ nguyên URL/hex sẵn có."""
     if not line.lower().startswith(LICENSE_KEY_PREFIX.lower()):
         return line
 
@@ -210,7 +205,6 @@ def is_radio_block(block) -> bool:
 
 
 def build_source_map(source_text: str):
-    """Map chính xác theo (group-title, tên kênh). Không fallback theo tên."""
     source_blocks = split_blocks(source_text)
     source_map = {}
     duplicate_keys = set()
@@ -243,7 +237,6 @@ def build_source_map(source_text: str):
 
 
 def build_source_id_map(source_text: str):
-    """Map nguồn vmttv theo tvg-id, không dựa vào tên hoặc group-title."""
     source_map = {}
     duplicate_ids = set()
 
@@ -268,7 +261,6 @@ def build_source_id_map(source_text: str):
 
 
 def build_group_id_map(source_text: str, allowed_groups: set[str]):
-    """Map tvg-id chỉ trong đúng nhóm yêu cầu, tránh ID trùng nhóm khác."""
     allowed = {normalize_group(group) for group in allowed_groups}
     source_map = {}
     duplicate_ids = set()
@@ -315,7 +307,6 @@ def stream_headers(block) -> dict:
 
 
 def is_stream_reachable(block) -> bool:
-    """Chỉ dùng để lọc nguồn Quốc Tế; không thay đổi metadata file đích."""
     url = get_stream_url(block)
     if not url:
         return False
@@ -406,7 +397,6 @@ def has_dynamic_license_url(block) -> bool:
 
 
 def build_worker_body(source_block):
-    """Dùng URL Worker cố định cho stream/license động, không đụng #EXTINF."""
     group = get_group_title(source_block)
     name = get_channel_name(source_block)
     query = urlencode({"group": group, "name": name})
@@ -439,12 +429,6 @@ def build_worker_body(source_block):
 
 
 def merge_channel(target_block, source_block):
-    """
-    QUY TẮC BẮT BUỘC:
-    - Giữ NGUYÊN target_block[0] (#EXTINF) từng ký tự.
-    - Không lấy tvg-logo/tvg-id/group-title/tên kênh từ upstream.
-    - Chỉ thay phần body phía dưới #EXTINF.
-    """
     if not target_block or not source_block:
         return target_block
 
