@@ -23,12 +23,31 @@ TVG_ID_SOURCE_URL = os.environ.get(
         "https://raw.githubusercontent.com/vuminhthanh12/vuminhthanh12/main/vmttv",
     ),
 )
+LOCAL_SOURCE_URL = os.environ.get(
+    "LOCAL_PLAYLIST_URL",
+    "https://tv.vietanhtv.top/sex",
+)
 TARGET_FILE = "m3u.m3u"
 WORKER_BASE_URL = "https://vietmitv-stream.viet-ng228.workers.dev"
 
 VTV_CAB_GROUP = "VTVcab"
 INTERNATIONAL_GROUP = "Quốc Tế"
-TVG_ID_SOURCE_GROUPS = {"Quốc Tế", "In The Box", "Địa Phương"}
+TVG_ID_SOURCE_GROUPS = {"Quốc Tế", "In The Box"}
+LOCAL_SOURCE_GROUP = "Địa Phương"
+# VietAnhTV dùng tvg-id khác file đích cho 11 kênh này.
+LOCAL_TVG_ID_ALIASES = {
+    "antvhd": "antv-hd",
+    "qpvnhd": "qpvn-hd",
+    "vinhlong1hd": "thvl1hd",
+    "vinhlong2hd": "thvl2hd",
+    "vinhlong3hd": "thvl3hd",
+    "vinhlong4hd": "thvl4hd",
+    "vinhlong5hd": "thvl5hd",
+    "tayninh1": "tayninhtv",
+    "dongnai3": "dnrtv3",
+    "dongthap1": "dongthap",
+    "haiphong3": "haiphongplus",
+}
 LICENSE_KEY_PREFIX = "#KODIPROP:inputstream.adaptive.license_key="
 
 
@@ -248,6 +267,33 @@ def build_source_id_map(source_text: str):
     return source_map, duplicate_ids
 
 
+def build_group_id_map(source_text: str, allowed_groups: set[str]):
+    """Map tvg-id chỉ trong đúng nhóm yêu cầu, tránh ID trùng nhóm khác."""
+    allowed = {normalize_group(group) for group in allowed_groups}
+    source_map = {}
+    duplicate_ids = set()
+
+    for block in split_blocks(source_text):
+        if normalize_group(get_group_title(block)) not in allowed:
+            continue
+        if is_radio_block(block):
+            continue
+
+        tvg_id = normalize_tvg_id(get_tvg_id(block))
+        if not tvg_id:
+            continue
+        if tvg_id in source_map:
+            duplicate_ids.add(tvg_id)
+
+        source_map[tvg_id] = {
+            "name": get_channel_name(block),
+            "group": get_group_title(block),
+            "block": block,
+        }
+
+    return source_map, duplicate_ids
+
+
 def get_stream_url(block) -> str:
     for line in reversed(block[1:]):
         if re.match(r"^https?://", line, re.IGNORECASE):
@@ -417,6 +463,7 @@ def update_target_file(
     target_file: str,
     source_map: dict,
     tvg_id_source_map: dict | None = None,
+    local_source_map: dict | None = None,
 ):
     print()
     print("=" * 72)
@@ -463,6 +510,7 @@ def update_target_file(
     tvg_id_source_groups = {
         normalize_group(item) for item in TVG_ID_SOURCE_GROUPS
     }
+    local_source_group = normalize_group(LOCAL_SOURCE_GROUP)
 
     updated_blocks = []
     updated_count = 0
@@ -475,7 +523,11 @@ def update_target_file(
         group_key = normalize_group(group)
         tvg_id = normalize_tvg_id(get_tvg_id(target_block))
 
-        if (
+        if group_key == local_source_group and tvg_id:
+            local_tvg_id = LOCAL_TVG_ID_ALIASES.get(tvg_id, tvg_id)
+            source = (local_source_map or {}).get(local_tvg_id)
+            match_label = f"VietAnhTV tvg-id={local_tvg_id}"
+        elif (
             group_key in tvg_id_source_groups
             and tvg_id
         ):
@@ -568,7 +620,8 @@ def main():
     print("       UPDATE PLAYLIST - GIỮ NGUYÊN ICON/METADATA GỐC")
     print("=" * 72)
     print("\nNguồn upstream: cấu hình qua UPSTREAM_PLAYLIST_URL.")
-    print(f"Nguồn Quốc Tế/In The Box/Địa Phương theo tvg-id: {TVG_ID_SOURCE_URL}\n")
+    print(f"Nguồn Quốc Tế/In The Box theo tvg-id: {TVG_ID_SOURCE_URL}")
+    print(f"Nguồn Địa Phương theo tvg-id: {LOCAL_SOURCE_URL}\n")
 
     try:
         source_text = fetch(SOURCE_URL)
@@ -599,6 +652,22 @@ def main():
         tvg_id_source_text
     )
 
+    try:
+        if LOCAL_SOURCE_URL == SOURCE_URL:
+            local_source_text = source_text
+        elif LOCAL_SOURCE_URL == TVG_ID_SOURCE_URL:
+            local_source_text = tvg_id_source_text
+        else:
+            local_source_text = fetch(LOCAL_SOURCE_URL)
+    except requests.RequestException as error:
+        print(f"[LỖI] Không tải được nguồn Địa Phương VietAnhTV:\n  {error}")
+        sys.exit(1)
+
+    local_source_map, local_duplicate_ids = build_group_id_map(
+        local_source_text,
+        {LOCAL_SOURCE_GROUP},
+    )
+
     print(f"Tìm thấy {len(source_blocks)} block upstream.")
     print(f"Đã loại {radio_count} block radio.")
     print(f"Tạo map được {len(source_map)} cặp group-title + tên kênh.")
@@ -616,6 +685,13 @@ def main():
         )
         print("tvg-id trùng dùng block xuất hiện sau cùng.")
 
+    if local_duplicate_ids:
+        print(
+            f"Cảnh báo: {len(local_duplicate_ids)} tvg-id bị trùng trong "
+            "nguồn Địa Phương VietAnhTV."
+        )
+        print("tvg-id trùng dùng block xuất hiện sau cùng.")
+
     if not source_map:
         print("\n[LỖI] Playlist upstream không có dữ liệu TV hợp lệ.")
         print("Không thay đổi file nào.")
@@ -626,6 +702,7 @@ def main():
         TARGET_FILE,
         source_map,
         tvg_id_source_map,
+        local_source_map,
     )
 
     print("\n" + "=" * 72)
