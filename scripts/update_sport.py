@@ -2,68 +2,102 @@
 import html,json,re,time
 from pathlib import Path
 from urllib.parse import urljoin,urlparse
+from datetime import datetime,timezone,timedelta
 import requests
 from bs4 import BeautifulSoup
 
 UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/151 Safari/537.36'
+VN=timezone(timedelta(hours=7))
 SOURCES=[('XOILAC','https://xoilacxbl.tv/'),('BIAOMTV','https://biaomtv.pro/')]
 MEDIA=re.compile(r'https?://[^\"\'<>\\\s]+?\.(?:m3u8|flv|mpd)(?:\?[^\"\'<>\\\s]*)?',re.I)
 
-def clean(s): return html.unescape(s).replace('\\/','/').replace('\\u0026','&').strip().rstrip('\\')
+def clean(s):return html.unescape(s or '').replace('\\/','/').replace('\\u0026','&').strip().rstrip('\\')
+def text_clean(s):return re.sub(r'\s+',' ',html.unescape(s or '')).strip()
 def sess(ref):
- s=requests.Session(); s.headers.update({'User-Agent':UA,'Referer':ref}); return s
+ s=requests.Session();s.headers.update({'User-Agent':UA,'Referer':ref,'Accept-Language':'vi-VN,vi;q=0.9,en;q=0.7'});return s
 def get(s,u,ref=None):
- r=s.get(u,headers={'Referer':ref} if ref else {},timeout=18,allow_redirects=True); r.raise_for_status(); return r.text,r.url
+ r=s.get(u,headers={'Referer':ref} if ref else {},timeout=18,allow_redirects=True);r.raise_for_status();r.encoding=r.apparent_encoding or 'utf-8';return r.text,r.url
 def medias(t):
  out=[]
  for u in MEDIA.findall(t or ''):
   u=clean(u)
-  if u not in out: out.append(u)
+  if u not in out:out.append(u)
  return out
 
+def meta_from_page(text,url,fallback):
+ soup=BeautifulSoup(text,'html.parser')
+ title=''
+ for key,attr in [('property','og:title'),('name','twitter:title')]:
+  x=soup.find('meta',attrs={key:attr})
+  if x and x.get('content'):title=text_clean(x['content']);break
+ if not title:title=text_clean(soup.title.string if soup.title and soup.title.string else fallback)
+ desc=''
+ x=soup.find('meta',attrs={'name':'description'}) or soup.find('meta',attrs={'property':'og:description'})
+ if x and x.get('content'):desc=text_clean(x['content'])
+ blob=' '.join([title,desc,url])
+ tm=re.search(r'(?<!\d)([01]?\d|2[0-3])[:h]([0-5]\d)(?!\d)',blob,re.I)
+ if not tm:
+  tm=re.search(r'(?:luc|lúc)[-_ ]?([01]?\d|2[0-3])[-_:h]?([0-5]\d)',blob,re.I)
+ minute=int(tm.group(1))*60+int(tm.group(2)) if tm else 99999
+ # Xoilac title chuẩn: Link trực tiếp A vs B 02:30, ngày ...
+ name=title
+ name=re.sub(r'^Link\s+trực\s+tiếp\s+','',name,flags=re.I)
+ name=re.sub(r'\s+\d{1,2}:\d{2},?\s*ngày.*$','',name,flags=re.I)
+ name=re.sub(r'\s*-\s*Xoilac.*$','',name,flags=re.I)
+ name=re.sub(r'\s+(?:lúc|luc)\s+\d{1,2}:?\d{2}.*$','',name,flags=re.I)
+ name=text_clean(name) or text_clean(fallback)
+ return name,minute
+
 def discover(label,home):
- s=sess(home); text,final=get(s,home); soup=BeautifulSoup(text,'html.parser'); host=urlparse(final).netloc; out={}
+ s=sess(home);text,final=get(s,home);soup=BeautifulSoup(text,'html.parser');host=urlparse(final).netloc;out={}
  for a in soup.find_all('a',href=True):
-  u=urljoin(final,a['href']); p=urlparse(u); path=p.path.lower()
-  if p.netloc!=host or ('/truc-tiep/' not in path and '/live/' not in path): continue
-  name=re.sub(r'\s+',' ',' '.join(a.stripped_strings)).strip() or p.path.rstrip('/').split('/')[-1].replace('-',' ')
-  out[u]=name[:180]
+  u=urljoin(final,a['href']);p=urlparse(u);path=p.path.lower()
+  if p.netloc!=host or ('/truc-tiep/' not in path and '/live/' not in path):continue
+  fallback=text_clean(' '.join(a.stripped_strings)) or p.path.rstrip('/').split('/')[-1].replace('-',' ')
+  out[u]=fallback[:180]
  return s,final,[(n,u) for u,n in out.items()]
 
-def xoilac(s,url):
- text,page=get(s,url); d=medias(text)
- if d:return d[0],page
- m=re.search(r'\blist_stream\s*=\s*(\[\[.*?\]\])\s*;',text,re.S); eps=[]
+def xoilac(s,url,fallback):
+ text,page=get(s,url);name,minute=meta_from_page(text,page,fallback);d=medias(text)
+ if d:return d[0],page,name,minute
+ m=re.search(r'\blist_stream\s*=\s*(\[\[.*?\]\])\s*;',text,re.S);eps=[]
  if m:
   raw=m.group(1).replace('\\/','/')
   try:
    for g in json.loads(raw):
-    if isinstance(g,list): eps.extend(x for x in g if isinstance(x,str))
-  except: eps.extend(re.findall(r'https?://[^\"\'\s\]]+/ajax/chanel/[^\"\'\s\]]+',raw,re.I))
+    if isinstance(g,list):eps.extend(x for x in g if isinstance(x,str))
+  except:eps.extend(re.findall(r'https?://[^\"\'\s\]]+/ajax/chanel/[^\"\'\s\]]+',raw,re.I))
  for ep in eps:
   for pu in (ep.rstrip('/')+'/off-tvc?is_off_add=false',ep):
    try:t,final=get(s,pu,page)
    except:continue
    m2=re.search(r'\burlStream\s*=\s*[\"\']([^\"\']+)[\"\']',t,re.I)
-   if m2:return clean(m2.group(1)),final
+   if m2:return clean(m2.group(1)),final,name,minute
    d=medias(t)
-   if d:return d[0],final
- return None,page
+   if d:return d[0],final,name,minute
+ return None,page,name,minute
 
 class Browser:
  def __init__(self):self.pw=self.b=self.c=None
  def start(self):
   from playwright.sync_api import sync_playwright
-  self.pw=sync_playwright().start(); self.b=self.pw.chromium.launch(headless=True,args=['--autoplay-policy=no-user-gesture-required']); self.c=self.b.new_context(user_agent=UA,locale='vi-VN')
- def resolve(self,url):
+  self.pw=sync_playwright().start();self.b=self.pw.chromium.launch(headless=True,args=['--autoplay-policy=no-user-gesture-required']);self.c=self.b.new_context(user_agent=UA,locale='vi-VN',timezone_id='Asia/Ho_Chi_Minh')
+ def resolve(self,url,fallback):
   if not self.c:self.start()
-  p=self.c.new_page(); hits=[]
-  p.on('request',lambda r: hits.append(r.url) if any(x in r.url.lower() for x in ('.m3u8','.flv','.mpd')) and r.url not in hits else None)
+  p=self.c.new_page();hits=[]
+  p.on('request',lambda r:hits.append(r.url) if any(x in r.url.lower() for x in ('.m3u8','.flv','.mpd')) and r.url not in hits else None)
   try:
-   p.goto(url,wait_until='domcontentloaded',timeout=18000); end=time.time()+16
+   p.goto(url,wait_until='domcontentloaded',timeout=18000);end=time.time()+16
    while time.time()<end and not hits:p.wait_for_timeout(500)
+   title=text_clean(p.title()) or fallback;body=''
+   try:body=text_clean(p.locator('body').inner_text(timeout=2000))[:4000]
+   except:pass
+   blob=title+' '+body+' '+url
+   tm=re.search(r'(?<!\d)([01]?\d|2[0-3]):([0-5]\d)(?!\d)',blob)
+   minute=int(tm.group(1))*60+int(tm.group(2)) if tm else 99999
+   name=re.sub(r'\s*[-|]\s*Biaom.*$','',title,flags=re.I).strip() or fallback
    hits.sort(key=lambda u:0 if '.m3u8' in u.lower() else 1 if '.flv' in u.lower() else 2)
-   return (hits[0] if hits else None),p.url
+   return (hits[0] if hits else None),p.url,name,minute
   finally:p.close()
  def close(self):
   for o,m in ((self.c,'close'),(self.b,'close'),(self.pw,'stop')):
@@ -71,29 +105,32 @@ class Browser:
     if o:getattr(o,m)()
    except:pass
 
-def clock(name):
- m=re.search(r'(?<!\d)([01]?\d|2[0-3]):([0-5]\d)(?!\d)',name or '')
- return int(m.group(1))*60+int(m.group(2)) if m else 99999
+def fmt_name(name,minute):
+ name=text_clean(name).replace(' vs ',' - ').replace(' VS ',' - ')
+ if minute==99999:return name
+ return f'{minute//60:02d}:{minute%60:02d} • {name}'
 
 def main():
- rows=[]; bb=None
+ rows=[];bb=None
  try:
   for label,home in SOURCES:
    try:s,final,matches=discover(label,home)
-   except Exception as e: print(label,'home error',e); continue
+   except Exception as e:print(label,'home error',e);continue
    print(label,'matches',len(matches))
-   if label=='BIAOMTV' and matches:bb=Browser(); bb.start()
-   for name,url in matches:
-    try:stream,ref=xoilac(s,url) if label=='XOILAC' else bb.resolve(url)
-    except Exception as e:print(label,name,'error',e);continue
-    if stream:rows.append((clock(name),label,name,stream,ref or final))
+   if label=='BIAOMTV' and matches:bb=Browser();bb.start()
+   for fallback,url in matches:
+    try:stream,ref,name,minute=xoilac(s,url,fallback) if label=='XOILAC' else bb.resolve(url,fallback)
+    except Exception as e:print(label,fallback,'error',e);continue
+    if stream:rows.append((minute,label,fmt_name(name,minute),stream,ref or final))
   rows.sort(key=lambda x:(x[0],x[2].casefold()))
-  lines=['#EXTM3U','# Generated: '+time.strftime('%Y-%m-%d %H:%M:%S UTC',time.gmtime())]
+  now=datetime.now(VN).strftime('%d/%m/%Y %H:%M:%S GMT+7')
+  lines=['#EXTM3U','# Cập nhật: '+now]
   for _,group,name,stream,ref in rows:
-   name=re.sub(r'\s+',' ',name).replace('"',"'")
-   lines += [f'#EXTINF:-1 group-title="{group}",{name}','#EXTVLCOPT:http-user-agent='+UA,'#EXTVLCOPT:http-referrer='+ref,stream]
-  Path('sport.m3u').write_text('\n'.join(lines)+'\n',encoding='utf-8')
-  print('sources:',len(rows))
+   safe=name.replace('"',"'")
+   lines += [f'#EXTINF:-1 group-title="{group}",{safe}','#EXTVLCOPT:http-user-agent='+UA,'#EXTVLCOPT:http-referrer='+ref,stream]
+  # UTF-8 BOM giúp các IPTV app Windows/Android cũ nhận tiếng Việt đúng hơn.
+  Path('sport.m3u').write_text('\n'.join(lines)+'\n',encoding='utf-8-sig')
+  print('sources:',len(rows),'updated',now)
  finally:
   if bb:bb.close()
 if __name__=='__main__':main()
