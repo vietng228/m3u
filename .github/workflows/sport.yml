@@ -15,7 +15,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
@@ -30,6 +30,7 @@ jobs:
           python -m playwright install --with-deps chromium
 
       - name: Build sport.m3u
+        timeout-minutes: 18
         run: python scripts/update_sport.py
 
       - name: Show result
