@@ -55,8 +55,9 @@ LOCAL_TVG_ID_ALIASES = {
 }
 LICENSE_KEY_PREFIX = "#KODIPROP:inputstream.adaptive.license_key="
 
-VXM_MAGIC = b"VXMENC2\x00"
-VXM_AAD = b"VietMiTV/VXMENC2"
+VXM_MAGIC = b"VXMENC3\x00"
+VXM_AAD_PREFIX = b"VietMiTV/VXMENC3"
+VXM_KEY_ID = 1
 VXM_K = [
     bytes([0x85,0x05,0x75,0x40,0xE5,0x2E,0xD3,0xF2]),
     bytes([0x57,0xD8,0xC3,0x3E,0x7F,0x13,0x1C,0xE3]),
@@ -65,92 +66,220 @@ VXM_K = [
 ]
 VXM_M = [0x5A,0xA7,0x3C,0xD1]
 
-def build_vxmenc2(playlist_text: str, private_key_pem: str) -> bytes:
-    text = playlist_text.replace("\\r\\n","\\n").replace("\\r","\\n").strip()
-    if not text.startswith("#EXTM3U"):
-        text = "#EXTM3U\\n" + text
-    text += "\\n"
+
+def load_vxmenc3_private_key():
+    raw = os.environ.get("VXMENC3_PRIVATE_KEY_B64", "").strip()
+    if not raw:
+        raise RuntimeError("Thiếu GitHub Secret VXMENC3_PRIVATE_KEY_B64")
+
+    try:
+        der = base64.b64decode(raw, validate=True)
+        private_key = serialization.load_der_private_key(der, password=None)
+    except Exception as exc:
+        raise RuntimeError(
+            "VXMENC3_PRIVATE_KEY_B64 không phải PKCS#8 DER base64 hợp lệ"
+        ) from exc
+
+    if not isinstance(private_key, ec.EllipticCurvePrivateKey):
+        raise RuntimeError("VXMENC3 private key không phải EC private key")
+
+    if private_key.curve.name != "secp256r1":
+        raise RuntimeError("VXMENC3 private key phải dùng P-256/secp256r1")
+
+    return private_key
+
+
+def derive_vxmenc3_key(salt: bytes) -> bytes:
     seed = bytes(v ^ VXM_M[i] for i, part in enumerate(VXM_K) for v in part)
-    salt, iv = os.urandom(16), os.urandom(12)
     key = hashlib.sha256(seed + salt).digest()
+
     for _ in range(60000):
         key = hashlib.sha256(key + salt).digest()
-    ciphertext = AESGCM(key).encrypt(iv, text.encode("utf-8"), VXM_AAD)
-    signed = salt + iv + struct.pack(">I", len(ciphertext)) + ciphertext
-    private_key = serialization.load_pem_private_key(
-        private_key_pem.encode("utf-8"), password=None)
+
+    return key
+
+
+def build_vxmenc3_aad(
+    counter: int,
+    key_id: int,
+    created_at: int,
+    salt: bytes,
+    iv: bytes,
+) -> bytes:
+    return (
+        VXM_AAD_PREFIX
+        + struct.pack(">QIQ", counter, key_id, created_at)
+        + salt
+        + iv
+    )
+
+
+def build_vxmenc3(playlist_text: str, counter: int) -> bytes:
+    text = playlist_text.replace("\r\n", "\n").replace("\r", "\n").strip()
+
+    if not text.startswith("#EXTM3U"):
+        text = "#EXTM3U\n" + text
+
+    text += "\n"
+
+    if counter <= 0:
+        raise RuntimeError("VXMENC3 counter phải lớn hơn 0")
+
+    private_key = load_vxmenc3_private_key()
+
+    salt = os.urandom(16)
+    iv = os.urandom(12)
+    created_at = int(time.time())
+
+    key = derive_vxmenc3_key(salt)
+    aad = build_vxmenc3_aad(
+        counter,
+        VXM_KEY_ID,
+        created_at,
+        salt,
+        iv,
+    )
+
+    ciphertext = AESGCM(key).encrypt(
+        iv,
+        text.encode("utf-8"),
+        aad,
+    )
+
+    signed = (
+        struct.pack(">QIQ", counter, VXM_KEY_ID, created_at)
+        + salt
+        + iv
+        + struct.pack(">I", len(ciphertext))
+        + ciphertext
+    )
+
     signature = private_key.sign(
-        VXM_MAGIC + signed, ec.ECDSA(hashes.SHA256()))
-    return (VXM_MAGIC + struct.pack(">I", len(signed)) + signed +
-            struct.pack(">I", len(signature)) + signature)
+        VXM_MAGIC + signed,
+        ec.ECDSA(hashes.SHA256()),
+    )
+
+    return (
+        VXM_MAGIC
+        + struct.pack(">I", len(signed))
+        + signed
+        + struct.pack(">I", len(signature))
+        + signature
+    )
 
 
-def decrypt_vxmenc2(payload: bytes) -> str:
-    if len(payload) < 16 or payload[:8] != VXM_MAGIC:
-        raise RuntimeError("vxm.enc không đúng định dạng VXMENC2")
+def decrypt_vxmenc3(payload: bytes) -> tuple[str, int]:
+    if len(payload) < 96 or payload[:8] != VXM_MAGIC:
+        raise RuntimeError("vxm.enc không đúng định dạng VXMENC3")
 
     pos = 8
+
+    if pos + 4 > len(payload):
+        raise RuntimeError("VXMENC3 thiếu signed length")
+
     signed_len = struct.unpack(">I", payload[pos:pos+4])[0]
     pos += 4
+
     signed = payload[pos:pos+signed_len]
     pos += signed_len
+
     if len(signed) != signed_len or pos + 4 > len(payload):
-        raise RuntimeError("vxm.enc bị thiếu dữ liệu")
+        raise RuntimeError("VXMENC3 bị thiếu dữ liệu")
 
     sig_len = struct.unpack(">I", payload[pos:pos+4])[0]
     pos += 4
+
     signature = payload[pos:pos+sig_len]
+
     if len(signature) != sig_len or pos + sig_len != len(payload):
-        raise RuntimeError("vxm.enc có cấu trúc/chữ ký không hợp lệ")
+        raise RuntimeError("VXMENC3 signature length không hợp lệ")
 
-    # GitHub Action owns the signing private key; derive its public key and
-    # verify the current encrypted state before using it as the template.
-    pem = os.environ.get("VXM_SIGNING_PRIVATE_KEY", "").strip()
-    if not pem:
-        raise RuntimeError("Thiếu GitHub Secret VXM_SIGNING_PRIVATE_KEY")
-    private_key = serialization.load_pem_private_key(
-        pem.encode("utf-8"), password=None)
+    private_key = load_vxmenc3_private_key()
     public_key = private_key.public_key()
-    public_key.verify(
-        signature, VXM_MAGIC + signed, ec.ECDSA(hashes.SHA256()))
 
-    if len(signed) < 32:
-        raise RuntimeError("VXMENC2 signed body quá ngắn")
-    salt = signed[:16]
-    iv = signed[16:28]
-    cipher_len = struct.unpack(">I", signed[28:32])[0]
-    ciphertext = signed[32:32+cipher_len]
-    if len(ciphertext) != cipher_len or 32 + cipher_len != len(signed):
-        raise RuntimeError("VXMENC2 ciphertext length không hợp lệ")
+    try:
+        public_key.verify(
+            signature,
+            VXM_MAGIC + signed,
+            ec.ECDSA(hashes.SHA256()),
+        )
+    except Exception as exc:
+        raise RuntimeError("Chữ ký VXMENC3 hiện tại không hợp lệ") from exc
 
-    seed = bytes(v ^ VXM_M[i] for i, part in enumerate(VXM_K) for v in part)
-    key = hashlib.sha256(seed + salt).digest()
-    for _ in range(60000):
-        key = hashlib.sha256(key + salt).digest()
+    if len(signed) < 52:
+        raise RuntimeError("VXMENC3 signed body quá ngắn")
 
-    plaintext = AESGCM(key).decrypt(iv, ciphertext, VXM_AAD)
-    return plaintext.decode("utf-8")
+    counter, key_id, created_at = struct.unpack(">QIQ", signed[:20])
+    salt = signed[20:36]
+    iv = signed[36:48]
+    cipher_len = struct.unpack(">I", signed[48:52])[0]
+    ciphertext = signed[52:52+cipher_len]
+
+    if counter <= 0:
+        raise RuntimeError("VXMENC3 counter không hợp lệ")
+
+    if key_id != VXM_KEY_ID:
+        raise RuntimeError(f"VXMENC3 key-id không hỗ trợ: {key_id}")
+
+    if created_at <= 0:
+        raise RuntimeError("VXMENC3 created_at không hợp lệ")
+
+    if len(ciphertext) != cipher_len or 52 + cipher_len != len(signed):
+        raise RuntimeError("VXMENC3 ciphertext length không hợp lệ")
+
+    key = derive_vxmenc3_key(salt)
+    aad = build_vxmenc3_aad(
+        counter,
+        key_id,
+        created_at,
+        salt,
+        iv,
+    )
+
+    try:
+        plaintext = AESGCM(key).decrypt(
+            iv,
+            ciphertext,
+            aad,
+        )
+    except Exception as exc:
+        raise RuntimeError("Không giải mã/xác thực được VXMENC3") from exc
+
+    text = plaintext.decode("utf-8")
+
+    if not text.startswith("#EXTM3U"):
+        raise RuntimeError("VXMENC3 plaintext không phải playlist M3U")
+
+    return text, counter
 
 
-def load_current_playlist() -> str:
+def load_current_playlist() -> tuple[str, int]:
     path = Path(ENC_FILE)
+
     if not path.exists():
         raise RuntimeError(f"Không tìm thấy {ENC_FILE}")
-    text = decrypt_vxmenc2(path.read_bytes())
+
+    text, counter = decrypt_vxmenc3(path.read_bytes())
+
     if not get_extinf_lines(text):
         raise RuntimeError(f"{ENC_FILE} giải mã được nhưng không có #EXTINF")
-    print(f"Đã giải mã {ENC_FILE}: {len(get_extinf_lines(text))} kênh")
-    return text
+
+    print(
+        f"Đã giải mã {ENC_FILE}: "
+        f"{len(get_extinf_lines(text))} kênh; counter={counter}"
+    )
+
+    return text, counter
 
 
-def write_encrypted_playlist(playlist_text: str) -> None:
-    pem = os.environ.get("VXM_SIGNING_PRIVATE_KEY","").strip()
-    if not pem:
-        raise RuntimeError("Thiếu GitHub Secret VXM_SIGNING_PRIVATE_KEY")
-    payload = build_vxmenc2(playlist_text, pem)
+def write_encrypted_playlist(playlist_text: str, counter: int) -> None:
+    payload = build_vxmenc3(playlist_text, counter)
     Path(ENC_FILE).write_bytes(payload)
-    print(f"Đã tạo {ENC_FILE}: {len(payload):,} bytes")
 
+    print(
+        f"Đã tạo {ENC_FILE}: {len(payload):,} bytes; "
+        f"counter={counter}"
+    )
 
 
 def fetch(url: str) -> str:
@@ -634,7 +763,7 @@ def update_playlist_text(
 
 def main():
     print("=" * 72)
-    print("       UPDATE VXM.ENC - GIỮ NGUYÊN ICON/METADATA GỐC")
+    print("       UPDATE VXMENC3 - GIỮ NGUYÊN ICON/METADATA GỐC")
     print("=" * 72)
     print("\nNguồn upstream: cấu hình qua UPSTREAM_PLAYLIST_URL.")
     print(f"Nguồn Quốc Tế/In The Box theo tvg-id: {TVG_ID_SOURCE_URL}")
@@ -715,7 +844,7 @@ def main():
         sys.exit(1)
 
     source_map = filter_reachable_international(source_map)
-    current_text = load_current_playlist()
+    current_text, current_counter = load_current_playlist()
     new_text, result = update_playlist_text(
         current_text,
         source_map,
@@ -723,7 +852,7 @@ def main():
         local_source_map,
     )
     if result["changed"]:
-        write_encrypted_playlist(new_text)
+        write_encrypted_playlist(new_text, current_counter + 1)
     else:
         print("Playlist plaintext không đổi -> giữ nguyên vxm.enc, không tạo ciphertext mới.")
 
