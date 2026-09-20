@@ -32,7 +32,6 @@ LOCAL_SOURCE_URL = os.environ.get(
     "LOCAL_PLAYLIST_URL",
     "https://tv.vietanhtv.top/sex",
 )
-TARGET_FILE = "m3u.m3u"
 ENC_FILE = "vxm.enc"
 WORKER_BASE_URL = "https://vietmitv-stream.viet-ng228.workers.dev"
 
@@ -84,6 +83,65 @@ def build_vxmenc2(playlist_text: str, private_key_pem: str) -> bytes:
         VXM_MAGIC + signed, ec.ECDSA(hashes.SHA256()))
     return (VXM_MAGIC + struct.pack(">I", len(signed)) + signed +
             struct.pack(">I", len(signature)) + signature)
+
+
+def decrypt_vxmenc2(payload: bytes) -> str:
+    if len(payload) < 16 or payload[:8] != VXM_MAGIC:
+        raise RuntimeError("vxm.enc không đúng định dạng VXMENC2")
+
+    pos = 8
+    signed_len = struct.unpack(">I", payload[pos:pos+4])[0]
+    pos += 4
+    signed = payload[pos:pos+signed_len]
+    pos += signed_len
+    if len(signed) != signed_len or pos + 4 > len(payload):
+        raise RuntimeError("vxm.enc bị thiếu dữ liệu")
+
+    sig_len = struct.unpack(">I", payload[pos:pos+4])[0]
+    pos += 4
+    signature = payload[pos:pos+sig_len]
+    if len(signature) != sig_len or pos + sig_len != len(payload):
+        raise RuntimeError("vxm.enc có cấu trúc/chữ ký không hợp lệ")
+
+    # GitHub Action owns the signing private key; derive its public key and
+    # verify the current encrypted state before using it as the template.
+    pem = os.environ.get("VXM_SIGNING_PRIVATE_KEY", "").strip()
+    if not pem:
+        raise RuntimeError("Thiếu GitHub Secret VXM_SIGNING_PRIVATE_KEY")
+    private_key = serialization.load_pem_private_key(
+        pem.encode("utf-8"), password=None)
+    public_key = private_key.public_key()
+    public_key.verify(
+        signature, VXM_MAGIC + signed, ec.ECDSA(hashes.SHA256()))
+
+    if len(signed) < 32:
+        raise RuntimeError("VXMENC2 signed body quá ngắn")
+    salt = signed[:16]
+    iv = signed[16:28]
+    cipher_len = struct.unpack(">I", signed[28:32])[0]
+    ciphertext = signed[32:32+cipher_len]
+    if len(ciphertext) != cipher_len or 32 + cipher_len != len(signed):
+        raise RuntimeError("VXMENC2 ciphertext length không hợp lệ")
+
+    seed = bytes(v ^ VXM_M[i] for i, part in enumerate(VXM_K) for v in part)
+    key = hashlib.sha256(seed + salt).digest()
+    for _ in range(60000):
+        key = hashlib.sha256(key + salt).digest()
+
+    plaintext = AESGCM(key).decrypt(iv, ciphertext, VXM_AAD)
+    return plaintext.decode("utf-8")
+
+
+def load_current_playlist() -> str:
+    path = Path(ENC_FILE)
+    if not path.exists():
+        raise RuntimeError(f"Không tìm thấy {ENC_FILE}")
+    text = decrypt_vxmenc2(path.read_bytes())
+    if not get_extinf_lines(text):
+        raise RuntimeError(f"{ENC_FILE} giải mã được nhưng không có #EXTINF")
+    print(f"Đã giải mã {ENC_FILE}: {len(get_extinf_lines(text))} kênh")
+    return text
+
 
 def write_encrypted_playlist(playlist_text: str) -> None:
     pem = os.environ.get("VXM_SIGNING_PRIVATE_KEY","").strip()
@@ -487,63 +545,29 @@ def merge_channel(target_block, source_block):
     return [target_extinf, *source_body]
 
 
-def update_target_file(
-    target_file: str,
+def update_playlist_text(
+    target_text: str,
     source_map: dict,
     tvg_id_source_map: dict | None = None,
     local_source_map: dict | None = None,
 ):
     print()
     print("=" * 72)
-    print(f" ĐANG XỬ LÝ: {target_file}")
+    print(" ĐANG XỬ LÝ: vxm.enc (GIẢI MÃ TRONG RAM)")
     print("=" * 72)
-
-    path = Path(target_file)
-
-    try:
-        target_text = path.read_text(encoding="utf-8")
-    except FileNotFoundError:
-        print(f"[BỎ QUA] Không tìm thấy file: {target_file}")
-        return dict(
-            file=target_file,
-            exists=False,
-            changed=False,
-            updated=0,
-            same=0,
-            not_found=0,
-        )
-    except Exception as error:
-        print(f"[LỖI] Không đọc được {target_file}: {error}")
-        return dict(
-            file=target_file,
-            exists=True,
-            changed=False,
-            updated=0,
-            same=0,
-            not_found=0,
-        )
 
     target_lines = target_text.splitlines()
     first_block = next(
-        (
-            i
-            for i, line in enumerate(target_lines)
-            if line.startswith("#EXTINF")
-        ),
+        (i for i, line in enumerate(target_lines) if line.startswith("#EXTINF")),
         len(target_lines),
     )
-
     header_lines = target_lines[:first_block]
     target_blocks = split_blocks("\n".join(target_lines[first_block:]))
-    tvg_id_source_groups = {
-        normalize_group(item) for item in TVG_ID_SOURCE_GROUPS
-    }
+    tvg_id_source_groups = {normalize_group(item) for item in TVG_ID_SOURCE_GROUPS}
     local_source_group = normalize_group(LOCAL_SOURCE_GROUP)
 
     updated_blocks = []
-    updated_count = 0
-    same_count = 0
-    not_found_count = 0
+    updated_count = same_count = not_found_count = 0
 
     for target_block in target_blocks:
         group = get_group_title(target_block)
@@ -555,15 +579,11 @@ def update_target_file(
             local_tvg_id = LOCAL_TVG_ID_ALIASES.get(tvg_id, tvg_id)
             source = (local_source_map or {}).get(local_tvg_id)
             match_label = f"VietAnhTV tvg-id={local_tvg_id}"
-        elif (
-            group_key in tvg_id_source_groups
-            and tvg_id
-        ):
+        elif group_key in tvg_id_source_groups and tvg_id:
             source = (tvg_id_source_map or {}).get(tvg_id)
             match_label = f"tvg-id={tvg_id}"
         else:
-            key = (group_key, normalize_name(name))
-            source = source_map.get(key)
+            source = source_map.get((group_key, normalize_name(name)))
             match_label = "group-title + tên"
 
         if not source:
@@ -573,7 +593,6 @@ def update_target_file(
             continue
 
         new_block = merge_channel(target_block, source["block"])
-
         if new_block == target_block:
             same_count += 1
             print(f"[GIỮ NGUYÊN]     [{group}] {name}")
@@ -581,71 +600,41 @@ def update_target_file(
             updated_count += 1
             print(f"[UPDATE BODY]    [{group}] {name}")
 
-        # Chốt an toàn: EXTINF trước/sau sync phải giống tuyệt đối.
         if new_block[0] != target_block[0]:
-            raise RuntimeError(
-                f"EXTINF bị thay đổi ngoài ý muốn: [{group}] {name}"
-            )
-
+            raise RuntimeError(f"EXTINF bị thay đổi ngoài ý muốn: [{group}] {name}")
         updated_blocks.append(new_block)
 
     output_lines = list(header_lines)
     for block in updated_blocks:
         output_lines.extend(block)
-
     new_text = "\n".join(output_lines) + ("\n" if output_lines else "")
-    original_extinf = get_extinf_lines(target_text)
-    output_extinf = get_extinf_lines(new_text)
 
-    # Fail-safe toàn file: không ghi nếu bất kỳ #EXTINF nào bị sửa, thêm,
-    # xóa hoặc đổi thứ tự. Kiểm tra độc lập với merge_channel để bảo vệ cả
-    # những thay đổi vô tình trong quá trình dựng lại playlist.
-    if output_extinf != original_extinf:
+    if get_extinf_lines(new_text) != get_extinf_lines(target_text):
         raise RuntimeError(
-            "Fail-safe: danh sách #EXTINF đã thay đổi; hủy ghi m3u.m3u"
+            "Fail-safe: danh sách #EXTINF đã thay đổi; hủy cập nhật vxm.enc"
         )
 
-    normalized_old_text = (
-        target_text.replace("\r\n", "\n").replace("\r", "\n")
-    )
-    changed = new_text != normalized_old_text
+    old_norm = target_text.replace("\r\n", "\n").replace("\r", "\n")
+    changed = new_text != old_norm
 
     print("\n" + "-" * 72)
     print(f"Giữ nguyên danh sách : {len(target_blocks)} kênh")
     print("Giữ nguyên EXTINF    : 100% (logo/tvg-id/group/name)")
-
-    if not changed:
-        print(f"{target_file}: Không có thay đổi.")
-    else:
-        try:
-            path.write_text(
-                new_text,
-                encoding="utf-8",
-                newline="\n",
-            )
-            print(f"Đã cập nhật file: {target_file}")
-        except Exception as error:
-            print(f"[LỖI] Không ghi được {target_file}: {error}")
-            changed = False
-
-    print(f"Đã đồng bộ body : {updated_count}")
-    print(f"Đã giống nguồn  : {same_count}")
-    print(f"Không tìm thấy  : {not_found_count}")
+    print(f"Đã đồng bộ body      : {updated_count}")
+    print(f"Đã giống nguồn       : {same_count}")
+    print(f"Không tìm thấy       : {not_found_count}")
+    print(f"Nội dung thay đổi    : {'Có' if changed else 'Không'}")
     print("-" * 72)
 
-    return dict(
-        file=target_file,
-        exists=True,
-        changed=changed,
-        updated=updated_count,
-        same=same_count,
-        not_found=not_found_count,
+    return new_text, dict(
+        file=ENC_FILE, exists=True, changed=changed, updated=updated_count,
+        same=same_count, not_found=not_found_count,
     )
 
 
 def main():
     print("=" * 72)
-    print("       UPDATE PLAYLIST - GIỮ NGUYÊN ICON/METADATA GỐC")
+    print("       UPDATE VXM.ENC - GIỮ NGUYÊN ICON/METADATA GỐC")
     print("=" * 72)
     print("\nNguồn upstream: cấu hình qua UPSTREAM_PLAYLIST_URL.")
     print(f"Nguồn Quốc Tế/In The Box theo tvg-id: {TVG_ID_SOURCE_URL}")
@@ -722,20 +711,21 @@ def main():
 
     if not source_map:
         print("\n[LỖI] Playlist upstream không có dữ liệu TV hợp lệ.")
-        print("Không thay đổi file nào.")
+        print("Không thay đổi vxm.enc.")
         sys.exit(1)
 
     source_map = filter_reachable_international(source_map)
-    result = update_target_file(
-        TARGET_FILE,
+    current_text = load_current_playlist()
+    new_text, result = update_playlist_text(
+        current_text,
         source_map,
         tvg_id_source_map,
         local_source_map,
     )
-    target_path = Path(TARGET_FILE)
-    if not target_path.exists():
-        raise RuntimeError("Thiếu m3u.m3u template để giữ EXTINF/icon/thứ tự kênh")
-    write_encrypted_playlist(target_path.read_text(encoding="utf-8"))
+    if result["changed"]:
+        write_encrypted_playlist(new_text)
+    else:
+        print("Playlist plaintext không đổi -> giữ nguyên vxm.enc, không tạo ciphertext mới.")
 
     print("\n" + "=" * 72)
     print("                           TỔNG KẾT")
