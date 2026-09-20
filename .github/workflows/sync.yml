@@ -1,4 +1,4 @@
-name: Sync
+name: Sync VXMENC3
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - '.github/workflows/sync.yml'
+      - 'scripts/update.py'
   schedule:
     - cron: '7,22,37,52 * * * *'
   workflow_dispatch: {}
@@ -13,9 +14,14 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: vxm-playlist-sync
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repo
@@ -31,11 +37,32 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests cryptography
 
-      - name: Run sync script
+      - name: Run VXMENC3 sync
         run: python scripts/update.py
         env:
           UPSTREAM_PLAYLIST_URL: ${{ secrets.UPSTREAM_PLAYLIST_URL }}
-          VXM_SIGNING_PRIVATE_KEY: ${{ secrets.VXM_SIGNING_PRIVATE_KEY }}
+          VXMENC3_PRIVATE_KEY_B64: ${{ secrets.VXMENC3_PRIVATE_KEY_B64 }}
+
+      - name: Validate VXMENC3
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path("vxm.enc")
+
+          if not p.exists():
+              raise SystemExit("ERROR: vxm.enc không tồn tại")
+
+          data = p.read_bytes()
+
+          if len(data) < 96:
+              raise SystemExit("ERROR: vxm.enc quá nhỏ")
+
+          if data[:8] != b"VXMENC3\x00":
+              raise SystemExit("ERROR: vxm.enc không phải VXMENC3")
+
+          print(f"VXMENC3 OK - {len(data):,} bytes")
+          PY
 
       - name: Commit and push if changed
         run: |
@@ -47,6 +74,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "Không có thay đổi, bỏ qua commit."
           else
-            git commit -m "chore: auto sync channels [skip ci]"
+            git commit -m "chore: sync VXMENC3 playlist [skip ci]"
             git push
           fi
