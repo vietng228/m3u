@@ -1,0 +1,51 @@
+name: Migrate VXMENC2 to VXMENC3
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vxm-playlist-migration
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install crypto
+        run: pip install cryptography
+
+      - name: Migrate and self-verify
+        env:
+          VXM_SIGNING_PRIVATE_KEY: ${{ secrets.VXM_SIGNING_PRIVATE_KEY }}
+          VXMENC3_PRIVATE_KEY_B64: ${{ secrets.VXMENC3_PRIVATE_KEY_B64 }}
+        run: python scripts/migrate_vxm2_to_vxm3.py
+
+      - name: Final format check
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          b=Path("vxm.enc").read_bytes()
+          assert b[:8] == b"VXMENC3\x00"
+          assert Path("vxm.enc.v2.backup").exists()
+          print("VXMENC3 format + V2 backup OK")
+          PY
+
+      - name: Commit migrated playlist
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add vxm.enc
+          git commit -m "chore: migrate playlist to VXMENC3 [skip ci]"
+          git push
