@@ -13,6 +13,11 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 import requests
+import hashlib
+import struct
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import ec
 
 
 SOURCE_URL = os.environ.get("UPSTREAM_PLAYLIST_URL", "")
@@ -28,6 +33,7 @@ LOCAL_SOURCE_URL = os.environ.get(
     "https://tv.vietanhtv.top/sex",
 )
 TARGET_FILE = "m3u.m3u"
+ENC_FILE = "vxm.enc"
 WORKER_BASE_URL = "https://vietmitv-stream.viet-ng228.workers.dev"
 
 VTV_CAB_GROUP = "VTVcab"
@@ -49,6 +55,44 @@ LOCAL_TVG_ID_ALIASES = {
     "haiphong3": "haiphongplus",
 }
 LICENSE_KEY_PREFIX = "#KODIPROP:inputstream.adaptive.license_key="
+
+VXM_MAGIC = b"VXMENC2\x00"
+VXM_AAD = b"VietMiTV/VXMENC2"
+VXM_K = [
+    bytes([0x85,0x05,0x75,0x40,0xE5,0x2E,0xD3,0xF2]),
+    bytes([0x57,0xD8,0xC3,0x3E,0x7F,0x13,0x1C,0xE3]),
+    bytes([0x4A,0xBE,0xB2,0x89,0x9C,0x8E,0x21,0x63]),
+    bytes([0x77,0x06,0xC3,0x70,0xD7,0xCD,0x71,0x44]),
+]
+VXM_M = [0x5A,0xA7,0x3C,0xD1]
+
+def build_vxmenc2(playlist_text: str, private_key_pem: str) -> bytes:
+    text = playlist_text.replace("\\r\\n","\\n").replace("\\r","\\n").strip()
+    if not text.startswith("#EXTM3U"):
+        text = "#EXTM3U\\n" + text
+    text += "\\n"
+    seed = bytes(v ^ VXM_M[i] for i, part in enumerate(VXM_K) for v in part)
+    salt, iv = os.urandom(16), os.urandom(12)
+    key = hashlib.sha256(seed + salt).digest()
+    for _ in range(60000):
+        key = hashlib.sha256(key + salt).digest()
+    ciphertext = AESGCM(key).encrypt(iv, text.encode("utf-8"), VXM_AAD)
+    signed = salt + iv + struct.pack(">I", len(ciphertext)) + ciphertext
+    private_key = serialization.load_pem_private_key(
+        private_key_pem.encode("utf-8"), password=None)
+    signature = private_key.sign(
+        VXM_MAGIC + signed, ec.ECDSA(hashes.SHA256()))
+    return (VXM_MAGIC + struct.pack(">I", len(signed)) + signed +
+            struct.pack(">I", len(signature)) + signature)
+
+def write_encrypted_playlist(playlist_text: str) -> None:
+    pem = os.environ.get("VXM_SIGNING_PRIVATE_KEY","").strip()
+    if not pem:
+        raise RuntimeError("Thiếu GitHub Secret VXM_SIGNING_PRIVATE_KEY")
+    payload = build_vxmenc2(playlist_text, pem)
+    Path(ENC_FILE).write_bytes(payload)
+    print(f"Đã tạo {ENC_FILE}: {len(payload):,} bytes")
+
 
 
 def fetch(url: str) -> str:
@@ -688,6 +732,10 @@ def main():
         tvg_id_source_map,
         local_source_map,
     )
+    target_path = Path(TARGET_FILE)
+    if not target_path.exists():
+        raise RuntimeError("Thiếu m3u.m3u template để giữ EXTINF/icon/thứ tự kênh")
+    write_encrypted_playlist(target_path.read_text(encoding="utf-8"))
 
     print("\n" + "=" * 72)
     print("                           TỔNG KẾT")
