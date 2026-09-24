@@ -35,7 +35,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests cryptography
+          python -m pip install requests cryptography
+
+      - name: Check updater syntax
+        run: python -m py_compile scripts/update.py
 
       - name: Run VXMENC3 sync
         run: python scripts/update.py
@@ -43,26 +46,10 @@ jobs:
           UPSTREAM_PLAYLIST_URL: ${{ secrets.UPSTREAM_PLAYLIST_URL }}
           VXMENC3_PRIVATE_KEY_B64: ${{ secrets.VXMENC3_PRIVATE_KEY_B64 }}
 
-      - name: Validate VXMENC3
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          p = Path("vxm.enc")
-
-          if not p.exists():
-              raise SystemExit("ERROR: vxm.enc không tồn tại")
-
-          data = p.read_bytes()
-
-          if len(data) < 96:
-              raise SystemExit("ERROR: vxm.enc quá nhỏ")
-
-          if data[:8] != b"VXMENC3\x00":
-              raise SystemExit("ERROR: vxm.enc không phải VXMENC3")
-
-          print(f"VXMENC3 OK - {len(data):,} bytes")
-          PY
+      - name: Validate VXMENC3 signature and playlist
+        run: python scripts/update.py --validate-only
+        env:
+          VXMENC3_PRIVATE_KEY_B64: ${{ secrets.VXMENC3_PRIVATE_KEY_B64 }}
 
       - name: Commit and push if changed
         run: |

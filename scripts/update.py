@@ -39,6 +39,48 @@ VTV_CAB_GROUP = "VTVcab"
 INTERNATIONAL_GROUP = "Quốc Tế"
 TVG_ID_SOURCE_GROUPS = {"Quốc Tế", "In The Box"}
 LOCAL_SOURCE_GROUP = "Địa Phương"
+CHINA_GROUP = "🇨🇳| Trung Quốc"
+# Nhóm China là source độc lập và được full-sync. Chỉnh danh sách này khi cần
+# thêm/xóa/thay kênh; mọi block thuộc CHINA_GROUP trong vxm.enc sẽ phản ánh
+# đúng source này sau lần chạy kế tiếp.
+CHINA_SOURCE_TEXT = r'''#EXTM3U
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://images.now-tv.com/shares/channelPreview/img/en_hk/color/ch541_425_305", CCTV1
+http://74.91.26.218:82/live/cctv1hd.m3u8
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://upload.wikimedia.org/wikipedia/he/2/2f/1920px-CCTV-2_Logo.svg.png", CCTV2
+http://74.91.26.218:82/live/cctv2hd.m3u8
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://static.wikia.nocookie.net/logos/images/f/f2/CCTV3.png/revision/latest/scale-to-width-down/680?cb=20230514030148&path-prefix=vi", CCTV3
+http://74.91.26.218:82/live/cctv3hd.m3u8
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://static.wikia.nocookie.net/logos/images/d/da/CCTV4.png/revision/latest?cb=20230520135601&path-prefix=vi", CCTV4
+http://74.91.26.218:82/live/cctv4hd.m3u8
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://static.wikia.nocookie.net/logos/images/8/86/CCTV5.png/revision/latest/scale-to-width-down/1280?cb=20250201092935&path-prefix=vi", CCTV5
+https://cdn.qd.je/163189/cctv5
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://static.wikia.nocookie.net/logos/images/6/62/CCTV5%2B_logo.png/revision/latest?cb=20220226104639&path-prefix=vi", CCTV5+
+https://cdn.qd.je/163189/cctv5p
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://static.wikia.nocookie.net/logos/images/d/d9/CCTV6.png/revision/latest?cb=20230816063202&path-prefix=vi", CCTV6
+http://74.91.26.218:82/live/cctv6hd.m3u8
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://static.wikia.nocookie.net/logos/images/a/a6/CCTV7_tr%C6%B0%E1%BB%9Bc_2019.png/revision/latest/scale-to-width-down/1547?cb=20230104111736&path-prefix=vi", CCTV7
+http://74.91.26.218:82/live/cctv7hd.m3u8
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://www.tvchinese.net/uploads/tv/cctv8.jpg", CCTV8
+http://74.91.26.218:82/live/cctv8hd.m3u8
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://static.wikia.nocookie.net/logopedia/images/b/ba/CCTV-9.png/revision/latest?cb=20220111064222", CCTV9
+http://74.91.26.218:82/live/cctv9hd.m3u8
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmUMEKDTwahilfUCb6CEmVmyRG5vjn-1QAUQ&usqp=CAU", CCTV10
+http://74.91.26.218:82/live/cctv10hd.m3u8
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ecd51263-bb0f-4465-af86-f7ed25e58e70/dew5uz3-0d3f3caa-7ac2-4c9d-aaf5-8aa6abc33f4b.png/v1/fill/w_1280,h_550/cctv11_logo_by_amazingtoludada3000_dew5uz3-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NTUwIiwicGF0aCI6IlwvZlwvZWNkNTEyNjMtYmIwZi00NDY1LWFmODYtZjdlZDI1ZTU4ZTcwXC9kZXc1dXozLTBkM2YzY2FhLTdhYzItNGM5ZC1hYWY1LThhYTZhYmMzM2Y0Yi5wbmciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.8ug6Sn5aUfjIJREthEuWeK0cIMretxYjCpnyiH0U2BM", CCTV11
+http://74.91.26.218:82/live/cctv11hd.m3u8
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://static.wikia.nocookie.net/logos/images/7/7b/CCTV12.png/revision/latest/scale-to-width-down/1131?cb=20230513114830&path-prefix=vi", CCTV12
+http://74.91.26.218:82/live/cctv12hd.m3u8
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://static.wikia.nocookie.net/logos/images/e/e4/CCTV13.png/revision/latest/scale-to-width-down/1131?cb=20230513114844&path-prefix=vi", CCTV13
+http://74.91.26.218:82/live/cctv13hd.m3u8
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://static.wikia.nocookie.net/happy-heroes/images/c/c8/CCTV-14_Logo.png/revision/latest?cb=20201002050804", CCTV14
+http://74.91.26.218:82/live/cctv14hd.m3u8
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://i.imgur.com/MXep2Zc.png", CCTV15
+http://74.91.26.218:82/live/cctv15hd.m3u8
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://static.wikia.nocookie.net/logopedia/images/3/39/CCTV-16.png/revision/latest?cb=20211107032828", CCTV16
+https://cdn.qd.je/163189/cctv16
+#EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo=" https://i.imgur.com/omJsYRq.png", CCTV17
+http://74.91.26.218:82/live/cctv17hd.m3u8
+'''
 # VietAnhTV dùng tvg-id khác file đích cho 11 kênh này.
 LOCAL_TVG_ID_ALIASES = {
     "antvhd": "antv-hd",
@@ -366,12 +408,44 @@ def normalize_name(name: str) -> str:
     return normalize_text(name, preserve_plus=True)
 
 
+def normalize_china_name(name: str) -> str:
+    # China aliases thường chỉ khác khoảng trắng (CCTV1 / CCTV 1).
+    return normalize_name(name).replace(" ", "")
+
+
 def normalize_group(group: str) -> str:
     return normalize_text(group).replace(" ", "")
 
 
 def normalize_tvg_id(tvg_id: str) -> str:
     return tvg_id.strip().lower()
+
+
+def build_china_source_blocks(source_text: str):
+    """Parse and dedupe the authoritative full-sync China source by name."""
+    deduped = {}
+
+    for block in split_blocks(source_text):
+        group = get_group_title(block)
+        name = get_channel_name(block)
+        name_key = normalize_china_name(name)
+
+        if group != CHINA_GROUP:
+            raise RuntimeError(
+                "China source có group-title không hợp lệ: "
+                f"[{group}] {name}; yêu cầu chính xác [{CHINA_GROUP}]"
+            )
+        if not name_key:
+            raise RuntimeError("China source có block không có tên kênh hợp lệ")
+
+        if name_key in deduped:
+            print(f"[CHINA DEDUPE] {name}: dùng block source xuất hiện sau cùng")
+        deduped[name_key] = block
+
+    if not deduped:
+        raise RuntimeError("China source không có block hợp lệ")
+
+    return list(deduped.values())
 
 
 def decode_base64url_hex(value: str) -> str:
@@ -679,6 +753,7 @@ def update_playlist_text(
     source_map: dict,
     tvg_id_source_map: dict | None = None,
     local_source_map: dict | None = None,
+    china_source_blocks: list | None = None,
 ):
     print()
     print("=" * 72)
@@ -694,15 +769,26 @@ def update_playlist_text(
     target_blocks = split_blocks("\n".join(target_lines[first_block:]))
     tvg_id_source_groups = {normalize_group(item) for item in TVG_ID_SOURCE_GROUPS}
     local_source_group = normalize_group(LOCAL_SOURCE_GROUP)
-
+    china_source_blocks = china_source_blocks or build_china_source_blocks(
+        CHINA_SOURCE_TEXT
+    )
     updated_blocks = []
     updated_count = same_count = not_found_count = 0
+    old_china_count = 0
+    china_inserted = False
 
     for target_block in target_blocks:
         group = get_group_title(target_block)
         name = get_channel_name(target_block)
         group_key = normalize_group(group)
         tvg_id = normalize_tvg_id(get_tvg_id(target_block))
+
+        if group == CHINA_GROUP:
+            old_china_count += 1
+            if not china_inserted:
+                updated_blocks.extend(china_source_blocks)
+                china_inserted = True
+            continue
 
         if group_key == local_source_group and tvg_id:
             local_tvg_id = LOCAL_TVG_ID_ALIASES.get(tvg_id, tvg_id)
@@ -733,22 +819,49 @@ def update_playlist_text(
             raise RuntimeError(f"EXTINF bị thay đổi ngoài ý muốn: [{group}] {name}")
         updated_blocks.append(new_block)
 
+    if not china_inserted:
+        updated_blocks.extend(china_source_blocks)
+
     output_lines = list(header_lines)
     for block in updated_blocks:
         output_lines.extend(block)
     new_text = "\n".join(output_lines) + ("\n" if output_lines else "")
 
-    if get_extinf_lines(new_text) != get_extinf_lines(target_text):
+    old_non_china_extinf = [
+        block[0]
+        for block in target_blocks
+        if get_group_title(block) != CHINA_GROUP
+    ]
+    new_blocks = split_blocks(new_text)
+    new_non_china_extinf = [
+        block[0]
+        for block in new_blocks
+        if get_group_title(block) != CHINA_GROUP
+    ]
+    if new_non_china_extinf != old_non_china_extinf:
         raise RuntimeError(
-            "Fail-safe: danh sách #EXTINF đã thay đổi; hủy cập nhật vxm.enc"
+            "Fail-safe: #EXTINF ngoài group China đã bị thêm/xóa/sửa/đổi thứ tự; "
+            "hủy cập nhật vxm.enc"
+        )
+
+    actual_china_blocks = [
+        block for block in new_blocks if get_group_title(block) == CHINA_GROUP
+    ]
+    if actual_china_blocks != china_source_blocks:
+        raise RuntimeError(
+            "Fail-safe: group China sau full-sync không khớp source China"
         )
 
     old_norm = target_text.replace("\r\n", "\n").replace("\r", "\n")
     changed = new_text != old_norm
 
     print("\n" + "-" * 72)
-    print(f"Giữ nguyên danh sách : {len(target_blocks)} kênh")
-    print("Giữ nguyên EXTINF    : 100% (logo/tvg-id/group/name)")
+    print(f"Giữ nguyên group cũ  : {len(old_non_china_extinf)} kênh")
+    print("EXTINF group cũ      : KHÓA 100% (logo/tvg-id/group/name/thứ tự)")
+    print(
+        f"Full-sync China      : {old_china_count} -> "
+        f"{len(china_source_blocks)} kênh"
+    )
     print(f"Đã đồng bộ body      : {updated_count}")
     print(f"Đã giống nguồn       : {same_count}")
     print(f"Không tìm thấy       : {not_found_count}")
@@ -758,16 +871,58 @@ def update_playlist_text(
     return new_text, dict(
         file=ENC_FILE, exists=True, changed=changed, updated=updated_count,
         same=same_count, not_found=not_found_count,
+        china=len(china_source_blocks),
+    )
+
+
+def validate_encrypted_playlist() -> None:
+    path = Path(ENC_FILE)
+    if not path.exists():
+        raise RuntimeError(f"Không tìm thấy {ENC_FILE}")
+
+    text, counter = decrypt_vxmenc3(path.read_bytes())
+    blocks = split_blocks(text)
+    if not blocks:
+        raise RuntimeError(f"{ENC_FILE} không có block #EXTINF")
+
+    expected_china = build_china_source_blocks(CHINA_SOURCE_TEXT)
+    actual_china = [
+        block for block in blocks if get_group_title(block) == CHINA_GROUP
+    ]
+    if actual_china != expected_china:
+        raise RuntimeError(
+            "Group China trong vxm.enc không khớp source China hiện tại"
+        )
+
+    print(
+        f"VXMENC3 hợp lệ: {len(blocks)} kênh; "
+        f"China={len(actual_china)}; counter={counter}"
     )
 
 
 def main():
+    if sys.argv[1:]:
+        if sys.argv[1:] == ["--validate-only"]:
+            validate_encrypted_playlist()
+            return
+        raise SystemExit("Cách dùng: update.py [--validate-only]")
+
     print("=" * 72)
-    print("       UPDATE VXMENC3 - GIỮ NGUYÊN ICON/METADATA GỐC")
+    print("   UPDATE VXMENC3 - KHÓA GROUP CŨ / FULL-SYNC GROUP CHINA")
     print("=" * 72)
     print("\nNguồn upstream: cấu hình qua UPSTREAM_PLAYLIST_URL.")
     print(f"Nguồn Quốc Tế/In The Box theo tvg-id: {TVG_ID_SOURCE_URL}")
     print(f"Nguồn Địa Phương theo tvg-id: {LOCAL_SOURCE_URL}\n")
+
+    try:
+        china_source_blocks = build_china_source_blocks(CHINA_SOURCE_TEXT)
+    except RuntimeError as error:
+        print(f"[LỖI] China source không hợp lệ:\n  {error}")
+        sys.exit(1)
+    print(
+        f"Nguồn China full-sync: {len(china_source_blocks)} block "
+        f"thuộc đúng group [{CHINA_GROUP}]\n"
+    )
 
     try:
         source_text = fetch(SOURCE_URL)
@@ -850,6 +1005,7 @@ def main():
         source_map,
         tvg_id_source_map,
         local_source_map,
+        china_source_blocks,
     )
     if result["changed"]:
         write_encrypted_playlist(new_text, current_counter + 1)
@@ -865,7 +1021,8 @@ def main():
     print(f"Kênh đồng bộ     : {result['updated']}")
     print(f"Kênh đã giống    : {result['same']}")
     print(f"Không tìm thấy   : {result['not_found']}")
-    print("EXTINF/icon       : KHÓA NGUYÊN THEO FILE ĐÍCH")
+    print(f"Kênh China       : {result['china']} (FULL-SYNC)")
+    print("EXTINF group cũ  : KHÓA NGUYÊN THEO FILE ĐÍCH")
     print("=" * 72)
 
 
