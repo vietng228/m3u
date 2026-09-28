@@ -975,8 +975,8 @@ def main():
             local_source_text = tvg_id_source_text
         else:
             local_source_text = fetch(LOCAL_SOURCE_URL)
-    except requests.RequestException as error:
-        print(f"[LỖI] Không tải được nguồn Địa Phương VietAnhTV:\n  {error}")
+    except requests.RequestException:
+        print("[LỖI] Không tải được nguồn Địa Phương VietAnhTV: [URL ẩn]")
         sys.exit(1)
 
     local_source_map, local_duplicate_ids = build_group_id_map(
