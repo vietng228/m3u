@@ -28,9 +28,25 @@ TVG_ID_SOURCE_URL = os.environ.get(
         "https://raw.githubusercontent.com/vuminhthanh12/vuminhthanh12/main/vmttv",
     ),
 )
+_VA_KEY = 0x6D
+_VA_DATA = bytes([
+    5, 25, 25, 29, 30, 87, 66, 66,
+    25, 27, 67, 27, 4, 8, 25, 12,
+    3, 5, 25, 27, 67, 25, 2, 29,
+    66, 25, 4, 27, 4, 66, 4, 3,
+    9, 8, 21, 67, 29, 5, 29, 82,
+    24, 80, 12, 9, 0, 4, 3, 75,
+    29, 80, 95, 95, 92, 93, 93, 88,
+])
+
+
+def _get_vietanh_source_url() -> str:
+    return bytes(value ^ _VA_KEY for value in _VA_DATA).decode("utf-8")
+
+
 LOCAL_SOURCE_URL = os.environ.get(
     "LOCAL_PLAYLIST_URL",
-    "https://tv.vietanhtv.top/sex",
+    _get_vietanh_source_url(),
 )
 ENC_FILE = "vxm.enc"
 WORKER_BASE_URL = "https://vietmitv-stream.viet-ng228.workers.dev"
@@ -81,7 +97,6 @@ https://cdn.qd.je/163189/cctv16
 #EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo=" https://i.imgur.com/omJsYRq.png", CCTV17
 http://74.91.26.218:82/live/cctv17hd.m3u8
 '''
-# VietAnhTV dùng tvg-id khác file đích cho 11 kênh này.
 LOCAL_TVG_ID_ALIASES = {
     "antvhd": "antv-hd",
     "qpvnhd": "qpvn-hd",
@@ -912,7 +927,7 @@ def main():
     print("=" * 72)
     print("\nNguồn upstream: cấu hình qua UPSTREAM_PLAYLIST_URL.")
     print(f"Nguồn Quốc Tế/In The Box theo tvg-id: {TVG_ID_SOURCE_URL}")
-    print(f"Nguồn Địa Phương theo tvg-id: {LOCAL_SOURCE_URL}\n")
+    print("Nguồn Địa Phương theo tvg-id: VietAnhTV [URL ẩn]\\n")
 
     try:
         china_source_blocks = build_china_source_blocks(CHINA_SOURCE_TEXT)
