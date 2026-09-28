@@ -333,17 +333,37 @@ def write_encrypted_playlist(playlist_text: str, counter: int) -> None:
     )
 
 
-def fetch(url: str) -> str:
+def fetch(url: str, *, require_m3u: bool = False) -> str:
     if not url:
         raise RuntimeError("UPSTREAM_PLAYLIST_URL chưa được cấu hình")
 
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36"
+        ),
+        "Accept": "text/plain,text/*,*/*;q=0.8",
+        "Accept-Language": "vi-VN,vi;q=0.9,en;q=0.7",
+        "Cache-Control": "no-cache",
+        "Pragma": "no-cache",
+    }
+
     response = requests.get(
         url,
-        timeout=30,
-        headers={"User-Agent": "Mozilla/5.0"},
+        timeout=(10, 45),
+        headers=headers,
+        allow_redirects=True,
     )
     response.raise_for_status()
-    return response.text
+
+    # Playlist endpoint is UTF-8 text; avoid a wrong server charset guess.
+    response.encoding = "utf-8"
+    body = response.text.lstrip("\ufeff").strip()
+
+    if require_m3u and not body.startswith("#EXTM3U"):
+        raise RuntimeError("Nguồn Địa Phương trả về dữ liệu không hợp lệ")
+
+    return body
 
 
 def split_blocks(text: str):
@@ -967,11 +987,12 @@ def main():
         elif LOCAL_SOURCE_URL == TVG_ID_SOURCE_URL:
             local_source_text = tvg_id_source_text
         else:
-            local_source_text = fetch(LOCAL_SOURCE_URL)
-    except requests.RequestException as error:
-        status = getattr(getattr(error, "response", None), "status_code", None)
-        suffix = f" (HTTP {status})" if status else ""
-        print(f"[LỖI] Không tải được nguồn Địa Phương{suffix}")
+            local_source_text = fetch(LOCAL_SOURCE_URL, require_m3u=True)
+    except requests.RequestException:
+        print("[LỖI] Không tải được nguồn Địa Phương")
+        sys.exit(1)
+    except RuntimeError as error:
+        print(f"[LỖI] {error}")
         sys.exit(1)
 
     local_source_map, local_duplicate_ids = build_group_id_map(
