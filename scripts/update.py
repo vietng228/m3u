@@ -40,14 +40,11 @@ _VA_DATA = bytes([
 ])
 
 
-def _get_vietanh_source_url() -> str:
+def _get_local_source_url() -> str:
     return bytes(value ^ _VA_KEY for value in _VA_DATA).decode("utf-8")
 
 
-LOCAL_SOURCE_URL = os.environ.get(
-    "LOCAL_PLAYLIST_URL",
-    _get_vietanh_source_url(),
-)
+LOCAL_SOURCE_URL = _get_local_source_url()
 ENC_FILE = "vxm.enc"
 WORKER_BASE_URL = "https://vietmitv-stream.viet-ng228.workers.dev"
 
@@ -56,9 +53,6 @@ INTERNATIONAL_GROUP = "Quốc Tế"
 TVG_ID_SOURCE_GROUPS = {"Quốc Tế", "In The Box"}
 LOCAL_SOURCE_GROUP = "Địa Phương"
 CHINA_GROUP = "🇨🇳| Trung Quốc"
-# Nhóm China là source độc lập và được full-sync. Chỉnh danh sách này khi cần
-# thêm/xóa/thay kênh; mọi block thuộc CHINA_GROUP trong vxm.enc sẽ phản ánh
-# đúng source này sau lần chạy kế tiếp.
 CHINA_SOURCE_TEXT = r'''#EXTM3U
 #EXTINF:-1 group-title="🇨🇳| Trung Quốc" tvg-logo="https://images.now-tv.com/shares/channelPreview/img/en_hk/color/ch541_425_305", CCTV1
 http://74.91.26.218:82/live/cctv1hd.m3u8
@@ -808,7 +802,7 @@ def update_playlist_text(
         if group_key == local_source_group and tvg_id:
             local_tvg_id = LOCAL_TVG_ID_ALIASES.get(tvg_id, tvg_id)
             source = (local_source_map or {}).get(local_tvg_id)
-            match_label = f"VietAnhTV tvg-id={local_tvg_id}"
+            match_label = f"tvg-id={local_tvg_id}"
         elif group_key in tvg_id_source_groups and tvg_id:
             source = (tvg_id_source_map or {}).get(tvg_id)
             match_label = f"tvg-id={tvg_id}"
@@ -927,7 +921,6 @@ def main():
     print("=" * 72)
     print("\nNguồn upstream: cấu hình qua UPSTREAM_PLAYLIST_URL.")
     print(f"Nguồn Quốc Tế/In The Box theo tvg-id: {TVG_ID_SOURCE_URL}")
-    print("Nguồn Địa Phương theo tvg-id: VietAnhTV [URL ẩn]\\n")
 
     try:
         china_source_blocks = build_china_source_blocks(CHINA_SOURCE_TEXT)
@@ -975,8 +968,10 @@ def main():
             local_source_text = tvg_id_source_text
         else:
             local_source_text = fetch(LOCAL_SOURCE_URL)
-    except requests.RequestException:
-        print("[LỖI] Không tải được nguồn Địa Phương VietAnhTV: [URL ẩn]")
+    except requests.RequestException as error:
+        status = getattr(getattr(error, "response", None), "status_code", None)
+        suffix = f" (HTTP {status})" if status else ""
+        print(f"[LỖI] Không tải được nguồn Địa Phương{suffix}")
         sys.exit(1)
 
     local_source_map, local_duplicate_ids = build_group_id_map(
@@ -1004,7 +999,7 @@ def main():
     if local_duplicate_ids:
         print(
             f"Cảnh báo: {len(local_duplicate_ids)} tvg-id bị trùng trong "
-            "nguồn Địa Phương VietAnhTV."
+            "nguồn Địa Phương."
         )
         print("tvg-id trùng dùng block xuất hiện sau cùng.")
 
