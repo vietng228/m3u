@@ -1000,6 +1000,35 @@ def main():
         {LOCAL_SOURCE_GROUP},
     )
 
+    # Refresh VTVcab from LOCAL_SOURCE_URL (the encoded new /tivi endpoint).
+    # Only source bodies are replaced; target EXTINF metadata/order stays locked.
+    _, vtvcab_source_map_all, vtvcab_duplicate_keys, _ = build_source_map(
+        local_source_text
+    )
+    vtvcab_group_key = normalize_group(VTV_CAB_GROUP)
+    vtvcab_source_map = {
+        key: value
+        for key, value in vtvcab_source_map_all.items()
+        if key[0] == vtvcab_group_key
+    }
+
+    if not vtvcab_source_map:
+        raise RuntimeError(
+            f"Nguồn VTVcab mới không có kênh thuộc group [{VTV_CAB_GROUP}]"
+        )
+
+    # Override VTVcab only; every other group still uses the existing upstream.
+    for key in [key for key in source_map if key[0] == vtvcab_group_key]:
+        source_map.pop(key, None)
+    source_map.update(vtvcab_source_map)
+
+    print(f"Nguồn VTVcab mới: {len(vtvcab_source_map)} kênh.")
+    vtvcab_dupes = [
+        key for key in vtvcab_duplicate_keys if key[0] == vtvcab_group_key
+    ]
+    if vtvcab_dupes:
+        print(f"Cảnh báo: {len(vtvcab_dupes)} kênh VTVcab trùng tên ở nguồn mới.")
+
     print(f"Tìm thấy {len(source_blocks)} block upstream.")
     print(f"Đã loại {radio_count} block radio.")
     print(f"Tạo map được {len(source_map)} cặp group-title + tên kênh.")
