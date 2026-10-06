@@ -15,7 +15,8 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 
 ENC_FILE = "vxm.enc"
-SOURCE_ENV = "UPSTREAM_PLAYLIST_URL"
+_SOURCE_KEY = 0x6D
+_SOURCE_DATA = bytes([5,25,25,29,30,87,66,66,27,4,8,25,0,4,25,27,67,4,9,67,27,3,66,27,4,8,25,0,4,25,27,67,0,94,24])
 
 VXM_MAGIC = b"VXMENC3\x00"
 VXM_AAD_PREFIX = b"VietMiTV/VXMENC3"
@@ -30,9 +31,7 @@ VXM_M = [0x5A, 0xA7, 0x3C, 0xD1]
 
 
 def source_url() -> str:
-    value = os.environ.get(SOURCE_ENV, "").strip()
-    if not value:
-        raise RuntimeError(f"Thiếu GitHub Secret {SOURCE_ENV}")
+    value = bytes(b ^ _SOURCE_KEY for b in _SOURCE_DATA).decode("utf-8")
     if not value.startswith(("https://", "http://")):
         raise RuntimeError("Nguồn playlist không hợp lệ")
     return value
