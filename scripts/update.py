@@ -20,7 +20,7 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import ec
 
 
-SOURCE_URL = os.environ.get("UPSTREAM_PLAYLIST_URL", "")
+SOURCE_URL = "https://vietmitv.id.vn/vietmitv.m3u"
 TVG_ID_SOURCE_URL = os.environ.get(
     "TVG_ID_PLAYLIST_URL",
     os.environ.get(
@@ -1086,5 +1086,53 @@ def main():
     print("=" * 72)
 
 
+def full_replace_main():
+    print("=" * 72)
+    print("   UPDATE VXMENC3 - FULL REPLACE FROM VIETMITV.M3U")
+    print("=" * 72)
+    print(f"\nNguồn duy nhất: {SOURCE_URL}")
+
+    try:
+        source_text = fetch(SOURCE_URL, require_m3u=True)
+    except requests.RequestException as error:
+        print(f"[LỖI] Không tải được vietmitv.m3u:\n  {error}")
+        sys.exit(1)
+    except Exception as error:
+        print(f"[LỖI] Playlist nguồn không hợp lệ:\n  {error}")
+        sys.exit(1)
+
+    source_text = source_text.replace("\r\n", "\n").replace("\r", "\n").strip() + "\n"
+    source_blocks = split_blocks(source_text)
+
+    if not source_blocks:
+        print("[LỖI] vietmitv.m3u không có kênh #EXTINF.")
+        sys.exit(1)
+
+    current_text, current_counter = load_current_playlist()
+
+    current_norm = current_text.replace("\r\n", "\n").replace("\r", "\n").strip() + "\n"
+    if current_norm == source_text:
+        print(f"Playlist đã trùng nguồn mới: {len(source_blocks)} kênh.")
+        print("Giữ nguyên vxm.enc, không tạo ciphertext mới.")
+        return
+
+    print(f"Xóa toàn bộ danh sách cũ trong plaintext: {len(split_blocks(current_text))} kênh.")
+    print(f"Áp dụng toàn bộ danh sách mới: {len(source_blocks)} kênh.")
+
+    write_encrypted_playlist(source_text, current_counter + 1)
+    validate_encrypted_playlist()
+
+    print("\n" + "=" * 72)
+    print("FULL REPLACE HOÀN TẤT")
+    print(f"Đã mã hóa toàn bộ: {len(source_blocks)} kênh")
+    print(f"Counter mới       : {current_counter + 1}")
+    print("=" * 72)
+
+
 if __name__ == "__main__":
-    main()
+    if sys.argv[1:] == ["--validate-only"]:
+        validate_encrypted_playlist()
+    elif sys.argv[1:]:
+        raise SystemExit("Cách dùng: update.py [--validate-only]")
+    else:
+        full_replace_main()
