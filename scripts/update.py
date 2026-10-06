@@ -6,9 +6,7 @@ import os
 import struct
 import sys
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from urllib.parse import parse_qs, urljoin, urlparse
 
 import requests
 from cryptography.hazmat.primitives import hashes, serialization
@@ -92,89 +90,6 @@ def count_channels(text: str) -> int:
     return sum(1 for line in text.splitlines() if line.startswith("#EXTINF:"))
 
 
-def _is_short_url(url: str) -> bool:
-    try:
-        source = urlparse(source_url())
-        parsed = urlparse(url)
-    except ValueError:
-        return False
-
-    return (
-        parsed.scheme in ("http", "https")
-        and parsed.netloc == source.netloc
-        and parsed.path.endswith("/c.php")
-        and bool(parse_qs(parsed.query).get("k"))
-    )
-
-
-def _expand_one(url: str) -> str:
-    last_error = None
-
-    for attempt in range(3):
-        try:
-            response = requests.head(
-                url,
-                timeout=(5, 10),
-                allow_redirects=False,
-                headers={"User-Agent": "Mozilla/5.0"},
-            )
-
-            if response.status_code not in (301, 302, 303, 307, 308):
-                response = requests.get(
-                    url,
-                    timeout=(5, 10),
-                    allow_redirects=False,
-                    stream=True,
-                    headers={"User-Agent": "Mozilla/5.0"},
-                )
-
-            if response.status_code not in (301, 302, 303, 307, 308):
-                raise RuntimeError(
-                    f"Short-link không redirect: HTTP {response.status_code}"
-                )
-
-            target = response.headers.get("Location", "").strip()
-            if not target:
-                raise RuntimeError("Short-link thiếu Location")
-
-            return urljoin(url, target)
-
-        except requests.RequestException as exc:
-            last_error = exc
-            time.sleep(0.5 * (attempt + 1))
-
-    raise RuntimeError(f"Không resolve được short-link: {last_error}")
-
-
-def expand_short_links(text: str) -> str:
-    lines = text.splitlines()
-    positions = {
-        index: line.strip()
-        for index, line in enumerate(lines)
-        if line.startswith(("http://", "https://")) and _is_short_url(line.strip())
-    }
-
-    if not positions:
-        return text
-
-    resolved = {}
-    with ThreadPoolExecutor(max_workers=4) as executor:
-        futures = {
-            executor.submit(_expand_one, url): (index, url)
-            for index, url in positions.items()
-        }
-
-        for future in as_completed(futures):
-            index, url = futures[future]
-            resolved[index] = future.result()
-
-    for index, target in resolved.items():
-        lines[index] = target
-
-    print(f"Resolved {len(resolved)} short links before encryption.")
-    return normalize_playlist("\n".join(lines))
-
-
 def fetch_source() -> str:
     response = requests.get(
         source_url(),
@@ -189,7 +104,7 @@ def fetch_source() -> str:
     )
     response.raise_for_status()
     response.encoding = "utf-8"
-    return expand_short_links(normalize_playlist(response.text))
+    return normalize_playlist(response.text)
 
 
 def encrypt_playlist(text: str, counter: int) -> bytes:
