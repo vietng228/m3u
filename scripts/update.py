@@ -253,4 +253,4 @@ def main() -> None:
 if __name__ == "__main__":
     main()
 
-# Refresh signed playlist after VTVcab/SCTV resolver expiry repair (2026-10-16).
+# Refresh signed playlist after removing HTVC Ca Nhac (2026-10-16).
