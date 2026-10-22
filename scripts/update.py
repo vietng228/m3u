@@ -91,20 +91,36 @@ def count_channels(text: str) -> int:
 
 
 def fetch_source() -> str:
-    response = requests.get(
-        source_url(),
-        timeout=(10, 45),
-        allow_redirects=True,
-        headers={
-            "User-Agent": "Mozilla/5.0",
-            "Accept": "text/plain,text/*,*/*;q=0.8",
-            "Cache-Control": "no-cache",
-            "Pragma": "no-cache",
-        },
-    )
-    response.raise_for_status()
-    response.encoding = "utf-8"
-    return normalize_playlist(response.text)
+    for attempt in range(1, 5):
+        try:
+            response = requests.get(
+                source_url(),
+                timeout=(10, 45),
+                allow_redirects=True,
+                headers={
+                    "User-Agent": "Mozilla/5.0",
+                    "Accept": "text/plain,text/*,*/*;q=0.8",
+                    "Cache-Control": "no-cache",
+                    "Pragma": "no-cache",
+                },
+            )
+            try:
+                response.raise_for_status()
+                response.encoding = "utf-8"
+                return normalize_playlist(response.text)
+            finally:
+                response.close()
+        except requests.exceptions.SSLError:
+            raise
+        except (requests.ConnectionError, requests.Timeout, requests.HTTPError) as error:
+            status = error.response.status_code if error.response is not None else None
+            if status is not None and status not in (408, 429, 500, 502, 503, 504):
+                raise
+            if attempt == 4:
+                raise
+            delay = 5 * attempt
+            print(f"Tải nguồn thất bại ({type(error).__name__}); thử lại {attempt}/3 sau {delay}s", flush=True)
+            time.sleep(delay)
 
 
 def encrypt_playlist(text: str, counter: int) -> bytes:
